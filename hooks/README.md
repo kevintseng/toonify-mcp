@@ -10,34 +10,37 @@ This hook **automatically intercepts** tool results from Read, Grep, and other f
 
 ## Installation
 
-### 1. Build the hook
+### As Part of Plugin (Recommended)
+
+**The hook is automatically registered when you install toonify-mcp as a plugin:**
 
 ```bash
+# 1. Install package globally
+npm install -g toonify-mcp
+
+# 2. Add as Claude Code plugin
+claude plugin add toonify-mcp
+
+# The PostToolUse hook is now active!
+```
+
+### Standalone Installation (Advanced)
+
+If you need to install the hook without the full plugin:
+
+```bash
+# 1. Build the hook
 cd hooks/
 npm install
 npm run build
-```
 
-### 2. Register with Claude Code
-
-```bash
-# From hooks/ directory
-npm run install-hook
-
-# Or manually:
-claude hooks add PostToolUse -- node /Users/ktseng/Developer/Projects/toonify-mcp/hooks/post-tool-use.js
-```
-
-### 3. Verify installation
-
-```bash
-claude hooks list
-# Should show: PostToolUse: node .../post-tool-use.js
+# 2. Manually symlink or copy to Claude plugins directory
+# (Not recommended - use plugin installation instead)
 ```
 
 ## Configuration
 
-Create `~/.claude/toonify-hook-config.json`:
+Create `~/.claude/toonify-config.json`:
 
 ```json
 {
@@ -77,34 +80,31 @@ Optimized content sent to Claude API
 
 ## vs MCP Server
 
-| Feature | MCP Server | PostToolUse Hook |
-|---------|-----------|------------------|
-| **Activation** | Manual (call tool) | Automatic (intercept) |
-| **Compatibility** | Any MCP client | Claude Code only |
-| **Configuration** | MCP tools | Hook config file |
-| **Performance** | Call overhead | Zero overhead |
+| Feature | PostToolUse Hook (Plugin) | MCP Server |
+|---------|-------------------------|-----------|
+| **Activation** | Automatic (intercept) | Manual (call tool) |
+| **Compatibility** | Claude Code only | Any MCP client |
+| **Configuration** | Hook config file | MCP tools |
+| **Performance** | Zero overhead | Call overhead |
+| **Installation** | Plugin installation | MCP registration |
 
-**Recommendation**: Use PostToolUse hook for automatic optimization in Claude Code. Use MCP server for explicit control or other MCP clients.
-
-## Uninstall
-
-```bash
-claude hooks remove PostToolUse
-rm ~/.claude/toonify-hook-config.json
-```
+**Recommendation**: Use PostToolUse hook (plugin mode) for automatic optimization in Claude Code. Use MCP server for explicit control or other MCP clients.
 
 ## Troubleshooting
 
 ### Hook not triggering
 
 ```bash
-# Check if hook is registered
-claude hooks list
+# 1. Check plugin is installed
+claude plugin list | grep toonify
 
-# Check configuration
-cat ~/.claude/toonify-hook-config.json
+# 2. Check hooks.json exists
+ls ~/.claude/plugins/.../toonify-mcp/hooks/hooks.json
 
-# Test manually
+# 3. Check configuration
+cat ~/.claude/toonify-config.json
+
+# 4. Test manually
 echo '{"toolName":"Read","toolResult":{"content":[{"type":"text","text":"{\"test\":123}"}]}}' | node post-tool-use.js
 ```
 
@@ -136,3 +136,37 @@ products[2]{id,name,price}:
 ```
 
 **Automatically applied** - no manual calls needed!
+
+## Development
+
+### Building the hook
+
+```bash
+cd hooks/
+npm install
+npm run build
+```
+
+This compiles TypeScript to JavaScript and makes the hook ready for use.
+
+### Testing locally
+
+```bash
+# Test the hook directly
+echo '{"toolName":"Read","toolResult":{"content":[{"type":"text","text":"{\"foo\":\"bar\"}"}]}}' | node post-tool-use.js
+
+# Should output optimized JSON in TOON format
+```
+
+## Files
+
+- `post-tool-use.ts` - TypeScript source
+- `post-tool-use.js` - Compiled JavaScript (executed by Claude Code)
+- `hooks.json` - Hook registration config (read by Claude Code Plugin system)
+- `package.json` - Dependencies and build scripts
+
+## See Also
+
+- Main README: [../README.md](../README.md)
+- Plugin configuration: [../.claude-plugin/plugin.json](../.claude-plugin/plugin.json)
+- TOON format spec: https://github.com/toon-format/toon

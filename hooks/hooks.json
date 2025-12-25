@@ -1,0 +1,16 @@
+{
+  "description": "Toonify MCP - Automatic token optimization hook for structured data",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/hooks/post-tool-use.js",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

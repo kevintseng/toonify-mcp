@@ -1,19 +1,27 @@
 {
   "name": "toonify-mcp",
-  "version": "0.1.1",
-  "description": "MCP server for TOON format token optimization - works with any MCP client (Claude Code, ChatGPT, etc.)",
+  "version": "0.2.0",
+  "description": "MCP server + Claude Code Plugin for TOON format token optimization. Automatic 60%+ token reduction on JSON/CSV/YAML data via PostToolUse hook interception.",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
     "toonify-mcp": "dist/index.js"
   },
+  "files": [
+    "dist/",
+    ".claude-plugin/",
+    "hooks/",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && cd hooks && npm install && npm run build",
     "dev": "tsc --watch",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
     "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "postinstall": "node -e \"console.log('\\\\n📦 Toonify MCP installed!\\\\n\\\\n✅ MCP Server: Ready (use with claude mcp add)\\\\n✅ Plugin: Ready (use with claude plugin add)\\\\n\\\\nSee README.md for installation instructions.\\\\n')\""
   },
   "keywords": [
     "claude",
