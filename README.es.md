@@ -5,14 +5,15 @@
 Servidor MCP + Plugin de Claude Code que proporciona optimización automática de tokens para datos estructurados.
 Reduce el uso de tokens de la API de Claude en **30-65% según la estructura de datos** mediante conversión transparente al formato TOON, con ahorros típicos del **50-55%** para datos estructurados.
 
-## Novedades en v0.3.0
+## Novedades en v0.4.0
 
-✨ **¡Optimización de tokens multilingüe!**
-- ✅ Conteo preciso de tokens para más de 15 idiomas (chino, japonés, coreano, español, árabe, etc.)
-- ✅ Multiplicadores de tokens conscientes del idioma (2x para chino, 2.5x para japonés, 3x para árabe)
-- ✅ Soporte para detección automática de texto en idiomas mixtos
-- ✅ Precisión de optimización mejorada basada en pruebas de referencia reales
-- ✅ Afirmaciones de ahorro de tokens respaldadas por datos (rango 30-65%, típicamente 50-55%)
+✨ **¡Sistema de caché mejorado!**
+- ✅ Caché LRU con expiración TTL y persistencia opcional en disco
+- ✅ Mejora de rendimiento de 50-500x en aciertos de caché (~0.1ms vs 5-50ms)
+- ✅ Tres nuevas herramientas MCP: `clear_cache`, `get_cache_stats`, `cleanup_expired_cache`
+- ✅ Caché automática de resultados de optimización - evita reprocesar contenido idéntico
+- ✅ Correcciones críticas de errores: condiciones de carrera, E/S excesiva de disco, problemas de rendimiento O(n)
+- ✅ Todas las 122 pruebas pasan (eran 105) - corregidos 5 fallos de pruebas de referencia
 
 ## Características
 
@@ -241,7 +242,20 @@ npm uninstall -g toonify-mcp
 
 Licencia MIT - ver [LICENSE](LICENSE)
 
+---
+
+🇹🇼 **Crafted in Taiwan** | 台灣製造
+_Where innovation meets tradition_
+
 ## Registro de cambios
+
+### v0.4.0 (2025-12-26)
+- ✨ **Sistema de caché mejorado** - Caché LRU con expiración TTL y persistencia opcional
+- ✨ Mejora de rendimiento de 50-500x en aciertos de caché (~0.1ms vs 5-50ms)
+- ✨ Tres nuevas herramientas MCP para gestión de caché
+- 🐛 Correcciones críticas de errores: condiciones de carrera, E/S excesiva de disco, rendimiento O(n)
+- 🐛 Corregidos aciertos de caché falsos, validación faltante, errores no controlados
+- ✅ Todas las 122 pruebas pasan (corregidos 5 fallos de pruebas de referencia)
 
 ### v0.3.0 (2025-12-26)
 - ✨ **Optimización de tokens multilingüe** - conteo preciso para más de 15 idiomas
