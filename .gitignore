@@ -53,3 +53,4 @@ PUBLISHING.md
 
 # Test scripts (personal)
 test-mcp-call.sh
+test-languages.mjs

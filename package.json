@@ -1,7 +1,7 @@
 {
   "name": "toonify-mcp",
-  "version": "0.2.3",
-  "description": "MCP server + Claude Code Plugin for TOON format token optimization. Automatic 60%+ token reduction on JSON/CSV/YAML data via PostToolUse hook interception.",
+  "version": "0.3.0",
+  "description": "MCP server + Claude Code Plugin for TOON format token optimization. Reduces token usage by 30-65% (typically 50-55%) on JSON/CSV/YAML data via multilingual-aware optimization.",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
