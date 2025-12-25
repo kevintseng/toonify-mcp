@@ -1,6 +1,6 @@
 # 🎯 Toonify MCP
 
-**[English](README.md) | [繁體中文](README.zh-TW.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [Español](README.es.md) | [Tiếng Việt](README.vi.md) | [Bahasa Indonesia](README.id.md)**
+**[English](README.md) | [繁體中文](README.zh-TW.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | [Português](README.pt.md) | [Tiếng Việt](README.vi.md) | [Bahasa Indonesia](README.id.md)**
 
 MCP サーバー + Claude Code プラグインによる構造化データの自動トークン最適化。
 透過的な TOON フォーマット変換により、**データ構造に応じて Claude API トークン使用量を 30-65% 削減**し、構造化データでは一般的に **50-55%** の節約を実現します。

@@ -1,6 +1,6 @@
 # 🎯 Toonify MCP
 
-**[English](README.md) | [繁體中文](README.zh-TW.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [Español](README.es.md) | [Tiếng Việt](README.vi.md) | [Bahasa Indonesia](README.id.md)**
+**[English](README.md) | [繁體中文](README.zh-TW.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | [Português](README.pt.md) | [Tiếng Việt](README.vi.md) | [Bahasa Indonesia](README.id.md)**
 
 MCP 服务器 + Claude Code 插件，提供结构化数据的自动 token 优化。
 通过透明的 TOON 格式转换，**根据数据结构减少 30-65% 的 Claude API token 使用量**，结构化数据的典型节省率为 **50-55%**。
