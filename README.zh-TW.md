@@ -27,7 +27,7 @@ MCP 伺服器 + Claude Code 外掛程式，提供結構化數據的自動 token 
 
 ## 安裝方式
 
-### 選項 A：Claude Code 插件（推薦）⭐
+### 選項 A：Claude Code 外掛（推薦）⭐
 
 **自動 token 優化，無需手動調用：**
 
@@ -35,7 +35,7 @@ MCP 伺服器 + Claude Code 外掛程式，提供結構化數據的自動 token 
 # 1. 全域安裝
 npm install -g toonify-mcp
 
-# 2. 添加為插件（自動模式）
+# 2. 添加為外掛（自動模式）
 claude plugin add toonify-mcp
 
 # 3. 驗證安裝
@@ -69,7 +69,7 @@ claude mcp call toonify get_stats '{}'
 
 ## 運作原理
 
-### 插件模式（自動）
+### 外掛模式（自動）
 
 ```
 用戶：讀取大型 JSON 文件
@@ -147,7 +147,7 @@ products[2]{id,name,price}:
   102,Magic Mouse,79
 ```
 
-**在插件模式下自動應用 - 無需手動調用！**
+**在外掛模式下自動應用 - 無需手動調用！**
 
 ## 使用技巧
 
@@ -162,7 +162,7 @@ PostToolUse hook 在以下情況自動優化：
 ### 查看優化統計
 
 ```bash
-# 在插件模式下
+# 在外掛模式下
 claude mcp call toonify get_stats '{}'
 
 # 或檢查 Claude Code 輸出的統計（如果 TOONIFY_SHOW_STATS=true）
@@ -173,7 +173,7 @@ claude mcp call toonify get_stats '{}'
 ### Hook 未觸發
 
 ```bash
-# 1. 檢查插件是否已安裝
+# 1. 檢查外掛是否已安裝
 claude plugin list | grep toonify
 
 # 2. 檢查設定
@@ -196,21 +196,21 @@ export TOONIFY_SHOW_STATS=true
 - 提高 `minSavingsThreshold` 以跳過邊際優化
 - 如需要，將更多工具添加到 `skipToolPatterns`
 
-## 比較：插件 vs MCP 伺服器
+## 比較：外掛 vs MCP 伺服器
 
-| 功能 | 插件模式 | MCP 伺服器模式 |
+| 功能 | 外掛模式 | MCP 伺服器模式 |
 |------|---------|---------------|
 | **啟動方式** | 自動（PostToolUse） | 手動（調用工具） |
 | **兼容性** | 僅 Claude Code | 任何 MCP 客戶端 |
-| **設定** | 插件設定檔 | MCP 工具 |
+| **設定** | 外掛設定檔 | MCP 工具 |
 | **性能** | 零開銷 | 調用開銷 |
 | **使用場景** | 日常工作流程 | 明確控制 |
 
-**建議**：使用插件模式進行自動優化。使用 MCP 伺服器模式進行明確控制或其他 MCP 客戶端。
+**建議**：使用外掛模式進行自動優化。使用 MCP 伺服器模式進行明確控制或其他 MCP 客戶端。
 
 ## 卸載
 
-### 插件模式
+### 外掛模式
 ```bash
 claude plugin remove toonify-mcp
 rm ~/.claude/toonify-config.json
@@ -267,10 +267,10 @@ _Where innovation meets tradition_
 - 📝 多語言 README 版本
 
 ### v0.2.0 (2025-12-25)
-- ✨ 新增 Claude Code 插件支援與 PostToolUse hook
+- ✨ 新增 Claude Code 外掛支援與 PostToolUse hook
 - ✨ 自動 token 優化（無需手動調用）
-- ✨ 插件設定系統
-- ✨ 雙模式：插件（自動）+ MCP 伺服器（手動）
+- ✨ 外掛設定系統
+- ✨ 雙模式：外掛（自動）+ MCP 伺服器（手動）
 - 📝 全面文檔更新
 
 ### v0.1.1 (2024-12-24)
