@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **pcircle.ai marketplace integration** - One-click installation from Claude Code marketplace
+  - Created `.claude-plugin/marketplace.json` configuration
+  - Registered toonify-mcp as the first plugin in pcircle.ai marketplace
+  - Marketplace auto-discovery enabled (discoverable within 24 hours)
+  - Simplified installation process - browse marketplace, click install, done!
+- **Updated all 11 language README files** with marketplace installation option
+  - Added "Option A: Install from pcircle.ai Marketplace (Easiest) 🌟" as primary installation method
+  - Available in: English, Traditional Chinese, Japanese, Spanish, French, German, Korean, Russian, Portuguese, Vietnamese, Indonesian
+  - Previous installation options shifted to "Option B" (Plugin) and "Option C" (MCP Server)
+  - Consistent messaging across all languages emphasizing one-click convenience
+
+### Changed
+- Marketplace installation now recommended as the easiest method
+- Installation options reorganized to prioritize user experience:
+  1. **Marketplace** (easiest - one click)
+  2. **Plugin mode** (automatic - npm + claude plugin add)
+  3. **MCP Server** (manual - for explicit control)
+
+### Technical Details
+- **Marketplace configuration**: `.claude-plugin/marketplace.json`
+  - Owner: PCIRCLE AI (contact@pcircle.ai)
+  - Plugin version: 0.2.3
+  - Marketplace version: 1.0.0
+  - Source: Current repository root
+- **Distribution**: Available at [claudemarketplaces.com](https://claudemarketplaces.com)
+- **Discovery timeline**: Auto-discovered within 24 hours (requires 5+ GitHub stars)
+- **Documentation**: All 11 language versions updated consistently
+
 ## [0.4.0] - 2025-12-26
 
 ### Added
