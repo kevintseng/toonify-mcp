@@ -1,6 +1,6 @@
 # 🎯 Toonify MCP
 
-**[English](README.md) | [繁體中文](README.zh-TW.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | [Português](README.pt.md) | [Tiếng Việt](README.vi.md) | [Bahasa Indonesia](README.id.md)**
+**[English](README.md) | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | [Português](README.pt.md) | [Tiếng Việt](README.vi.md) | [Bahasa Indonesia](README.id.md)**
 
 Serveur MCP + Plugin Claude Code offrant une optimisation automatique des tokens pour les données structurées.
 Réduit l'utilisation des tokens de l'API Claude de **30 à 65 % selon la structure des données** grâce à la conversion transparente au format TOON, avec des économies typiques de **50 à 55 %** pour les données structurées.
