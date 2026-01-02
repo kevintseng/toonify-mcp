@@ -54,3 +54,14 @@ PUBLISHING.md
 # Test scripts (personal)
 test-mcp-call.sh
 test-languages.mjs
+
+# Internal development files (DO NOT PUSH)
+design/
+research/
+hooks/
+scripts/
+*.plan.md
+*.planning.md
+*.notes.md
+*-analysis.md
+*-debug.*
