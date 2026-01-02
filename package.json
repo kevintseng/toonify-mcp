@@ -31,8 +31,16 @@
     "toonify",
     "llm-optimization"
   ],
-  "author": "ktseng",
+  "author": "PCIRCLE AI <contact@pcircle.ai>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PCIRCLE-AI/toonify-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/PCIRCLE-AI/toonify-mcp/issues"
+  },
+  "homepage": "https://github.com/PCIRCLE-AI/toonify-mcp#readme",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
     "@toon-format/toon": "^2.1.0",

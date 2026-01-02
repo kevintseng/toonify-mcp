@@ -16,7 +16,7 @@
         "description": "Automatic token optimization for structured data using TOON format. Reduces Claude API token usage by 60%+ on JSON, CSV, and YAML data through transparent PostToolUse hook interception.",
         "version": "0.2.3",
         "author": "Kevin Tseng",
-        "homepage": "https://github.com/kevintseng/toonify-mcp",
+        "homepage": "https://github.com/PCIRCLE-AI/toonify-mcp",
         "license": "MIT"
       }
     }

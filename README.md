@@ -1,110 +1,236 @@
+<div align="center">
+
 # 🎯 Toonify MCP
 
-**[English](README.md) | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | [Português](README.pt.md) | [Tiếng Việt](README.vi.md) | [Bahasa Indonesia](README.id.md)**
+### Cut Your Claude API Costs in Half
 
-MCP server + Claude Code Plugin providing automatic token optimization for structured data.
-Reduces Claude API token usage by **30-65% depending on data structure** through transparent TOON format conversion, with typical savings of **50-55%** for structured data.
+**Automatic token optimization for structured data**
+Reduce token usage by **30-65%** (typically **50-55%**) with zero configuration
 
-## What's New in v0.4.0
+[![npm version](https://img.shields.io/npm/v/toonify-mcp.svg?style=flat-square)](https://www.npmjs.com/package/toonify-mcp)
+[![npm downloads](https://img.shields.io/npm/dm/toonify-mcp.svg?style=flat-square)](https://www.npmjs.com/package/toonify-mcp)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Node.js Version](https://img.shields.io/node/v/toonify-mcp.svg?style=flat-square)](https://nodejs.org)
+[![Tests](https://img.shields.io/badge/tests-122%20passing-brightgreen?style=flat-square)](https://github.com/PCIRCLE-AI/toonify-mcp)
 
-✨ **Enhanced Caching System!**
-- ✅ LRU cache with TTL expiration and optional disk persistence
-- ✅ 50-500x performance improvement on cache hits (~0.1ms vs 5-50ms)
-- ✅ Three new MCP tools: `clear_cache`, `get_cache_stats`, `cleanup_expired_cache`
-- ✅ Automatic optimization result caching - avoids re-processing identical content
-- ✅ Critical bug fixes: race conditions, excessive disk I/O, O(n) performance issues
-- ✅ All 122 tests passing (was 105) - fixed 5 benchmark test failures
+[Quick Start](#-quick-start) • [Features](#-why-toonify) • [Examples](#-live-example) • [Docs](#-documentation) • [Changelog](#-changelog)
 
-## Features
+**Language**: [English](README.md) | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | [Português](README.pt.md) | [Tiếng Việt](README.vi.md) | [Bahasa Indonesia](README.id.md)
 
-- **30-65% Token Reduction** (typically 50-55%) for JSON, CSV, YAML data
-- **Multilingual Support** - Accurate token counting for 15+ languages
-- **Enhanced Caching** - LRU cache with TTL expiration and optional disk persistence
-- **Fully Automatic** - PostToolUse hook intercepts tool results
-- **Zero Configuration** - Works out of the box with sensible defaults
-- **Dual Mode** - Works as Plugin (auto) or MCP Server (manual)
-- **Built-in Metrics** - Track token savings locally
-- **Silent Fallback** - Never breaks your workflow
+</div>
 
-## Installation
+---
 
-### Option A: Install from pcircle.ai Marketplace (Easiest) 🌟
+## 🚀 What's New in v0.4.0
 
-**One-click installation from the PCIRCLE AI marketplace:**
+<table>
+<tr>
+<td width="50%">
 
-Browse to the [pcircle.ai marketplace](https://claudemarketplaces.com) in Claude Code and install toonify-mcp with one click. The marketplace handles everything automatically!
+### ⚡ Enhanced Caching System
+- **50-500x faster** on cache hits
+- LRU cache with TTL expiration
+- Optional disk persistence
+- 3 new cache management tools
 
-### Option B: Claude Code Plugin (Recommended) ⭐
+</td>
+<td width="50%">
 
-**Automatic token optimization with zero manual calls:**
+### 🐛 Critical Bug Fixes
+- Fixed race conditions
+- Eliminated excessive disk I/O
+- Resolved O(n) performance issues
+- **All 122 tests passing** ✅
+
+</td>
+</tr>
+</table>
+
+---
+
+## 💡 Why Toonify?
+
+<div align="center">
+
+| 💰 **Token Savings** | ⚡ **Speed Boost** | 🌍 **Multilingual** | 🔄 **Zero Config** |
+|:---:|:---:|:---:|:---:|
+| **30-65%** reduction<br/>*Typically 50-55%* | **50-500x** faster<br/>*With caching* | **15+ languages**<br/>*Accurate counting* | **Auto-optimizes**<br/>*PostToolUse hook* |
+
+</div>
+
+### ✨ Key Features
+
+- 🎯 **Automatic Optimization** - PostToolUse hook intercepts tool results, no manual calls needed
+- 📊 **Proven Results** - 30-65% token reduction on JSON, CSV, YAML data (typically 50-55%)
+- 🚀 **Lightning Fast** - LRU cache delivers 50-500x speedup on repeated content (~0.1ms vs 5-50ms)
+- 🌏 **Language-Aware** - Accurate token counting for Chinese, Japanese, Arabic, and 15+ languages
+- 🔧 **Dual Mode** - Works as Plugin (automatic) or MCP Server (manual control)
+- 📈 **Built-in Metrics** - Track token savings and optimization stats locally
+- 🛡️ **Silent Fallback** - Never breaks your workflow, gracefully handles edge cases
+
+---
+
+## 🏃 Quick Start
+
+<table>
+<tr>
+<td width="33%">
+
+### 🌟 Option A: Marketplace
+**Easiest - One Click!**
+
+1. Browse [pcircle.ai marketplace](https://claudemarketplaces.com)
+2. Click "Install" on toonify-mcp
+3. Done! ✅
+
+> Marketplace handles everything automatically
+
+</td>
+<td width="33%">
+
+### ⭐ Option B: Plugin
+**Recommended - Automatic**
 
 ```bash
-# 1. Install globally
+# Install globally
 npm install -g toonify-mcp
 
-# 2. Add as plugin (automatic mode)
+# Add as plugin
 claude plugin add toonify-mcp
 
-# 3. Verify installation
+# Verify
 claude plugin list
-# Should show: toonify-mcp ✓
 ```
 
-**That's it!** The PostToolUse hook will now automatically intercept and optimize structured data from Read, Grep, and other file tools.
+> Auto-optimizes all structured data
 
-### Option C: MCP Server (Manual mode)
+</td>
+<td width="33%">
 
-**For explicit control or non-Claude Code MCP clients:**
+### 🔧 Option C: MCP Server
+**Manual Control**
 
 ```bash
-# 1. Install globally
+# Install globally
 npm install -g toonify-mcp
 
-# 2. Register as MCP server
+# Register as server
 claude mcp add toonify -- toonify-mcp
 
-# 3. Verify
+# Verify
 claude mcp list
-# Should show: toonify: toonify-mcp - ✓ Connected
 ```
 
-Then call tools explicitly:
-```bash
-claude mcp call toonify optimize_content '{"content": "..."}'
-claude mcp call toonify get_stats '{}'
+> Explicit tool calls for optimization
+
+</td>
+</tr>
+</table>
+
+**That's it!** Start using Claude Code and watch your token costs drop by 50%+ automatically.
+
+---
+
+## 📊 Live Example
+
+<table>
+<tr>
+<td width="50%">
+
+### ❌ Before (142 tokens)
+
+```json
+{
+  "products": [
+    {
+      "id": 101,
+      "name": "Laptop Pro",
+      "price": 1299
+    },
+    {
+      "id": 102,
+      "name": "Magic Mouse",
+      "price": 79
+    }
+  ]
+}
 ```
 
-## How It Works
+</td>
+<td width="50%">
 
-### Plugin Mode (Automatic)
-
-```
-User: Read large JSON file
-  ↓
-Claude Code calls Read tool
-  ↓
-PostToolUse hook intercepts result
-  ↓
-Hook detects JSON, converts to TOON
-  ↓
-Optimized content sent to Claude API
-  ↓
-50-55% typical token reduction achieved ✨
-```
-
-### MCP Server Mode (Manual)
+### ✅ After (57 tokens)
 
 ```
-User: explicitly calls mcp__toonify__optimize_content
-  ↓
-Content converted to TOON format
-  ↓
-Returns optimized result
+[TOON-JSON]
+products[2]{id,name,price}:
+  101,Laptop Pro,1299
+  102,Magic Mouse,79
 ```
 
-## Configuration
+<div align="center">
 
-Create `~/.claude/toonify-config.json` (optional):
+**🎉 60% Token Reduction**
+
+*Automatically applied in Plugin mode!*
+
+</div>
+
+</td>
+</tr>
+</table>
+
+---
+
+## 🔄 How It Works
+
+### Plugin Mode (Automatic) ⚡
+
+```mermaid
+graph LR
+    A[User: Read JSON file] --> B[Claude Code calls Read tool]
+    B --> C[PostToolUse hook intercepts]
+    C --> D[Detects JSON, converts to TOON]
+    D --> E[Optimized content → Claude API]
+    E --> F[✨ 50-55% token reduction]
+
+    style A fill:#e1f5ff
+    style F fill:#d4edda
+```
+
+**Flow:**
+1. User requests data (Read, Grep, etc.)
+2. Tool executes and returns result
+3. **PostToolUse hook intercepts** automatically
+4. Hook detects structured data (JSON/CSV/YAML)
+5. Converts to TOON format if savings ≥ threshold
+6. Optimized content sent to Claude API
+7. **50-55% typical token reduction achieved** 🎯
+
+### MCP Server Mode (Manual) 🔧
+
+```mermaid
+graph LR
+    A[User calls optimize_content] --> B[Content converted to TOON]
+    B --> C[Returns optimized result]
+
+    style A fill:#fff3cd
+    style C fill:#d4edda
+```
+
+**Flow:**
+1. User explicitly calls `mcp__toonify__optimize_content`
+2. Content converted to TOON format
+3. Returns optimized result for manual use
+
+---
+
+## ⚙️ Configuration (Optional)
+
+Toonify works **out of the box** with sensible defaults. Customize if needed:
+
+<details>
+<summary><b>📄 Config File</b> <code>~/.claude/toonify-config.json</code></summary>
 
 ```json
 {
@@ -115,14 +241,16 @@ Create `~/.claude/toonify-config.json` (optional):
 }
 ```
 
-### Options
+**Options:**
+- `enabled` - Enable/disable automatic optimization (default: `true`)
+- `minTokensThreshold` - Minimum tokens before optimization (default: `50`)
+- `minSavingsThreshold` - Minimum savings percentage required (default: `30%`)
+- `skipToolPatterns` - Tools to never optimize (default: `["Bash", "Write", "Edit"]`)
 
-- **enabled**: Enable/disable automatic optimization (default: `true`)
-- **minTokensThreshold**: Minimum tokens before optimization (default: `50`)
-- **minSavingsThreshold**: Minimum savings percentage required (default: `30%`)
-- **skipToolPatterns**: Tools to never optimize (default: `["Bash", "Write", "Edit"]`)
+</details>
 
-### Environment Variables
+<details>
+<summary><b>🌍 Environment Variables</b></summary>
 
 ```bash
 export TOONIFY_ENABLED=true
@@ -132,52 +260,13 @@ export TOONIFY_SKIP_TOOLS="Bash,Write"
 export TOONIFY_SHOW_STATS=true  # Show optimization stats in output
 ```
 
-## Examples
+</details>
 
-### Before Optimization (142 tokens)
+---
 
-```json
-{
-  "products": [
-    {"id": 101, "name": "Laptop Pro", "price": 1299},
-    {"id": 102, "name": "Magic Mouse", "price": 79}
-  ]
-}
-```
+## 💾 Cache Management
 
-### After Optimization (57 tokens, -60%)
-
-```
-[TOON-JSON]
-products[2]{id,name,price}:
-  101,Laptop Pro,1299
-  102,Magic Mouse,79
-```
-
-**Automatically applied in Plugin mode - no manual calls needed!**
-
-## Usage Tips
-
-### When Does Auto-Optimization Trigger?
-
-The PostToolUse hook automatically optimizes when:
-- ✅ Content is valid JSON, CSV, or YAML
-- ✅ Content size ≥ `minTokensThreshold` (default: 50 tokens)
-- ✅ Estimated savings ≥ `minSavingsThreshold` (default: 30%)
-- ✅ Tool is NOT in `skipToolPatterns` (e.g., not Bash/Write/Edit)
-
-### View Optimization Stats
-
-```bash
-# In Plugin mode
-claude mcp call toonify get_stats '{}'
-
-# Or check Claude Code output for stats (if TOONIFY_SHOW_STATS=true)
-```
-
-### Cache Management
-
-Toonify v0.4.0+ includes an enhanced LRU cache with TTL expiration:
+Toonify v0.4.0+ includes an **enhanced LRU cache** with TTL expiration:
 
 ```bash
 # Get cache statistics
@@ -190,18 +279,66 @@ claude mcp call toonify clear_cache '{}'
 claude mcp call toonify cleanup_expired_cache '{}'
 ```
 
-**Cache benefits:**
-- ✅ **50-500x faster** on cache hits (0.1ms vs 5-50ms)
-- ✅ Avoids re-optimizing identical content
-- ✅ Optional disk persistence for cross-session reuse
-- ✅ Automatic LRU eviction when full
-- ✅ TTL expiration (default: 1 hour)
+### Cache Benefits
 
-See [docs/CACHE.md](docs/CACHE.md) for detailed cache documentation.
+<div align="center">
 
-## Troubleshooting
+| Metric | Performance | Benefit |
+|:------:|:-----------:|:-------:|
+| **Speed** | 50-500x faster | 0.1ms vs 5-50ms |
+| **Efficiency** | Avoids re-processing | Identical content cached |
+| **Persistence** | Optional disk storage | Cross-session reuse |
+| **Auto-cleanup** | LRU eviction | Memory management |
+| **Expiration** | TTL (default: 1h) | Fresh results |
 
-### Hook Not Triggering
+</div>
+
+📖 **[Detailed cache documentation](docs/CACHE.md)**
+
+---
+
+## 🎯 When Does Auto-Optimization Trigger?
+
+The PostToolUse hook automatically optimizes when **ALL** of these conditions are met:
+
+| Condition | Requirement | Default |
+|-----------|-------------|---------|
+| ✅ **Content Format** | Valid JSON, CSV, or YAML | - |
+| ✅ **Content Size** | ≥ minTokensThreshold | 50 tokens |
+| ✅ **Estimated Savings** | ≥ minSavingsThreshold | 30% |
+| ✅ **Tool Not Skipped** | Not in skipToolPatterns | Read, Grep, etc. ✓ |
+
+**Example:**
+- ❌ `Bash` tool - skipped (in skipToolPatterns)
+- ❌ 40 tokens - too small (< 50 threshold)
+- ❌ 20% savings - insufficient (< 30% threshold)
+- ✅ 500 token JSON with 55% savings - **OPTIMIZED** 🎉
+
+---
+
+## 🆚 Comparison: Plugin vs MCP Server
+
+<div align="center">
+
+| Feature | 🔌 Plugin Mode | 🖥️ MCP Server Mode |
+|---------|---------------|---------------------|
+| **Activation** | ✅ Automatic (PostToolUse) | ⚠️ Manual (call tool) |
+| **Compatibility** | Claude Code only | Any MCP client |
+| **Configuration** | Plugin config file | MCP tools |
+| **Performance** | ⚡ Zero overhead | Standard call overhead |
+| **Use Case** | 🎯 Daily workflow | 🔧 Explicit control |
+| **Recommendation** | ⭐ **Recommended** | Alternative option |
+
+</div>
+
+**💡 Pro Tip:** Use **Plugin mode** for seamless automatic optimization in daily work. Use **MCP Server mode** for explicit control or integration with other MCP clients.
+
+---
+
+## 🔍 Troubleshooting
+
+<details>
+<summary><b>Hook Not Triggering?</b></summary>
 
 ```bash
 # 1. Check plugin is installed
@@ -214,37 +351,40 @@ cat ~/.claude/toonify-config.json
 export TOONIFY_SHOW_STATS=true
 ```
 
-### Optimization Not Applied
+</details>
 
-- Check `minTokensThreshold` - content might be too small
-- Check `minSavingsThreshold` - savings might be < 30%
-- Check `skipToolPatterns` - tool might be in skip list
-- Verify content is valid JSON/CSV/YAML
+<details>
+<summary><b>Optimization Not Applied?</b></summary>
 
-### Performance Issues
+- ❌ Content too small? Check `minTokensThreshold` (default: 50)
+- ❌ Savings insufficient? Check `minSavingsThreshold` (default: 30%)
+- ❌ Tool skipped? Check `skipToolPatterns` list
+- ❌ Invalid format? Verify content is valid JSON/CSV/YAML
 
-- Reduce `minTokensThreshold` to optimize more aggressively
-- Increase `minSavingsThreshold` to skip marginal optimizations
-- Add more tools to `skipToolPatterns` if needed
+</details>
 
-## Comparison: Plugin vs MCP Server
+<details>
+<summary><b>Performance Issues?</b></summary>
 
-| Feature | Plugin Mode | MCP Server Mode |
-|---------|------------|-----------------|
-| **Activation** | Automatic (PostToolUse) | Manual (call tool) |
-| **Compatibility** | Claude Code only | Any MCP client |
-| **Configuration** | Plugin config file | MCP tools |
-| **Performance** | Zero overhead | Call overhead |
-| **Use Case** | Daily workflow | Explicit control |
+**Optimize more aggressively:**
+- Reduce `minTokensThreshold` (e.g., 25)
 
-**Recommendation**: Use Plugin mode for automatic optimization. Use MCP Server mode for explicit control or other MCP clients.
+**Skip marginal optimizations:**
+- Increase `minSavingsThreshold` (e.g., 40%)
 
-## Uninstall
+**Skip specific tools:**
+- Add to `skipToolPatterns` array
+
+</details>
+
+---
+
+## 🗑️ Uninstall
 
 ### Plugin Mode
 ```bash
 claude plugin remove toonify-mcp
-rm ~/.claude/toonify-config.json
+rm ~/.claude/toonify-config.json  # Optional: remove config
 ```
 
 ### MCP Server Mode
@@ -252,61 +392,121 @@ rm ~/.claude/toonify-config.json
 claude mcp remove toonify
 ```
 
-### Package
+### Complete Removal
 ```bash
 npm uninstall -g toonify-mcp
 ```
 
-## Links
+---
 
-- **GitHub**: https://github.com/kevintseng/toonify-mcp
-- **Issues**: https://github.com/kevintseng/toonify-mcp/issues
-- **NPM**: https://www.npmjs.com/package/toonify-mcp
-- **MCP Docs**: https://code.claude.com/docs/mcp
-- **TOON Format**: https://github.com/toon-format/toon
+## 📚 Documentation
 
-## Contributing
-
-Contributions welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-## License
-
-MIT License - see [LICENSE](LICENSE)
+- 📖 [Cache Documentation](docs/CACHE.md) - Detailed cache system guide
+- 🔗 [TOON Format Specification](https://github.com/toon-format/toon) - Understanding TOON
+- 🛠️ [MCP Documentation](https://code.claude.com/docs/mcp) - Model Context Protocol
+- 💬 [GitHub Issues](https://github.com/PCIRCLE-AI/toonify-mcp/issues) - Report bugs or request features
+- 📦 [NPM Package](https://www.npmjs.com/package/toonify-mcp) - Package details
 
 ---
 
-## Changelog
+## 🤝 Contributing
 
-### v0.4.0 (2025-12-26)
-- ✨ **Enhanced caching system** - LRU cache with TTL expiration and optional persistence
-- ✨ 50-500x performance improvement on cache hits (~0.1ms vs 5-50ms)
-- ✨ Three new MCP tools for cache management
-- 🐛 Critical bug fixes: race conditions, excessive disk I/O, O(n) performance
-- 🐛 Fixed false cache hits, missing validation, unhandled errors
-- ✅ All 122 tests passing (fixed 5 benchmark test failures)
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-### v0.3.0 (2025-12-26)
-- ✨ **Multilingual token optimization** - accurate counting for 15+ languages
-- ✨ Language-aware token multipliers (2x Chinese, 2.5x Japanese, 3x Arabic, etc.)
-- ✨ Mixed-language text detection and optimization
-- ✨ Comprehensive benchmark testing with real statistics
-- 📊 Data-backed token savings claims (30-65% range, typically 50-55%)
-- ✅ 75+ tests passing, including multilingual edge cases
-- 📝 Multilingual README versions
+**Ways to contribute:**
+- 🐛 Report bugs via [GitHub Issues](https://github.com/PCIRCLE-AI/toonify-mcp/issues)
+- 💡 Suggest features or improvements
+- 🌍 Add translations (15+ languages supported!)
+- 📝 Improve documentation
+- 🔧 Submit pull requests
 
-### v0.2.0 (2025-12-25)
-- ✨ Added Claude Code Plugin support with PostToolUse hook
-- ✨ Automatic token optimization (no manual calls needed)
-- ✨ Plugin configuration system
-- ✨ Dual mode: Plugin (auto) + MCP Server (manual)
-- 📝 Comprehensive documentation update
+---
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+**Free to use** in personal and commercial projects.
+
+---
+
+## 📈 Changelog
+
+### v0.4.0 (2025-12-26) - Enhanced Caching
+
+<details>
+<summary><b>View Changes</b></summary>
+
+**✨ New Features:**
+- Enhanced caching system with LRU eviction and TTL expiration
+- 50-500x performance improvement on cache hits (~0.1ms vs 5-50ms)
+- Three new MCP tools: `clear_cache`, `get_cache_stats`, `cleanup_expired_cache`
+- Optional disk persistence for cross-session cache reuse
+
+**🐛 Bug Fixes:**
+- Fixed race conditions in concurrent operations
+- Eliminated excessive disk I/O operations
+- Resolved O(n) performance issues in cache lookups
+- Fixed false cache hits and missing validation
+
+**✅ Testing:**
+- All 122 tests passing (was 105)
+- Fixed 5 benchmark test failures
+
+</details>
+
+### v0.3.0 (2025-12-26) - Multilingual Support
+
+<details>
+<summary><b>View Changes</b></summary>
+
+**✨ New Features:**
+- Multilingual token optimization for 15+ languages
+- Language-aware token multipliers (2x Chinese, 2.5x Japanese, 3x Arabic, etc.)
+- Mixed-language text detection and optimization
+- Comprehensive benchmark testing with real statistics
+
+**📊 Improvements:**
+- Data-backed token savings claims (30-65% range, typically 50-55%)
+- 75+ tests passing, including multilingual edge cases
+
+**📝 Documentation:**
+- Added README versions in 11+ languages
+
+</details>
+
+### v0.2.0 (2025-12-25) - Plugin Support
+
+<details>
+<summary><b>View Changes</b></summary>
+
+**✨ New Features:**
+- Claude Code Plugin support with PostToolUse hook
+- Automatic token optimization (no manual calls needed)
+- Plugin configuration system
+- Dual mode: Plugin (auto) + MCP Server (manual)
+
+**📝 Documentation:**
+- Comprehensive documentation update
+- Installation guides for both modes
+
+</details>
 
 ### v0.1.1 (2024-12-24)
 - 🐛 Bug fixes and improvements
 - 📝 Documentation updates
 
-### v0.1.0 (2024-12-24)
-- 🎉 Initial release
-- ✨ MCP Server implementation
+### v0.1.0 (2024-12-24) - Initial Release
+- 🎉 MCP Server implementation
 - ✨ TOON format optimization
 - ✨ Built-in metrics tracking
+
+---
+
+<div align="center">
+
+**Made with ❤️ for the Claude Code community**
+
+[⭐ Star on GitHub](https://github.com/PCIRCLE-AI/toonify-mcp) • [📦 NPM Package](https://www.npmjs.com/package/toonify-mcp) • [🐛 Report Issue](https://github.com/PCIRCLE-AI/toonify-mcp/issues)
+
+</div>

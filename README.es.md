@@ -234,8 +234,8 @@ npm uninstall -g toonify-mcp
 
 ## Enlaces
 
-- **GitHub**: https://github.com/kevintseng/toonify-mcp
-- **Issues**: https://github.com/kevintseng/toonify-mcp/issues
+- **GitHub**: https://github.com/PCIRCLE-AI/toonify-mcp
+- **Issues**: https://github.com/PCIRCLE-AI/toonify-mcp/issues
 - **NPM**: https://www.npmjs.com/package/toonify-mcp
 - **Documentación MCP**: https://code.claude.com/docs/mcp
 - **Formato TOON**: https://github.com/toon-format/toon
