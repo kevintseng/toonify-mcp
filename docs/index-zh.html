@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toonify MCP - Token Optimization. Data First.</title>
-    <meta name="description" content="Ultra-compact TOON format conversion. 40-60% token savings. Data-driven efficiency.">
+    <title>Toonify MCP - Token 優化。數據至上。</title>
+    <meta name="description" content="超緊湊 TOON 格式轉換。40-60% token 節省量。數據驅動的效率。">
 
     <!-- Google Fonts: Fira Code + Fira Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -223,6 +223,8 @@
             font-weight: 700;
             cursor: pointer;
             transition: all 100ms ease;
+            text-decoration: none;
+            color: #000000;
         }
 
         .lang-switcher:hover {
@@ -417,32 +419,12 @@
             );
             pointer-events: none;
         }
-
-        /* Hidden Language Content */
-        [data-lang]:not([data-lang="en"]) {
-            display: none;
-        }
-
-        html[lang="zh-TW"] [data-lang="en"] {
-            display: none;
-        }
-
-        html[lang="zh-TW"] [data-lang="zh-TW"] {
-            display: block;
-        }
-
-        html[lang="zh-TW"] [data-lang="zh-TW"].inline {
-            display: inline;
-        }
     </style>
 </head>
 <body>
 
     <!-- Language Switcher -->
-    <button class="lang-switcher" id="langSwitch" aria-label="Switch language">
-        <span data-lang="en">EN → 中文</span>
-        <span data-lang="zh-TW" class="inline">中文 → EN</span>
-    </button>
+    <a href="index.html" class="lang-switcher" aria-label="切換語言">繁中 → EN</a>
 
     <!-- Navigation -->
     <nav>
@@ -450,18 +432,12 @@
             <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0;">
                 <div style="display: flex; align-items: center; gap: 1rem;">
                     <h1 style="font-size: 1.5rem; font-family: 'Fira Code', monospace; font-weight: 700;">TOONIFY_MCP</h1>
-                    <span class="badge-brutalist">OPEN SOURCE</span>
+                    <span class="badge-brutalist">開源專案</span>
                 </div>
                 <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                    <a href="#features" class="nav-link" data-lang="en">FEATURES</a>
-                    <a href="#features" class="nav-link" data-lang="zh-TW">功能特色</a>
-
-                    <a href="#performance" class="nav-link" data-lang="en">PERFORMANCE</a>
-                    <a href="#performance" class="nav-link" data-lang="zh-TW">效能數據</a>
-
-                    <a href="#install" class="nav-link" data-lang="en">INSTALL</a>
-                    <a href="#install" class="nav-link" data-lang="zh-TW">安裝</a>
-
+                    <a href="#features" class="nav-link">功能特色</a>
+                    <a href="#performance" class="nav-link">效能數據</a>
+                    <a href="#install" class="nav-link">安裝</a>
                     <a href="https://github.com/PCIRCLE-AI/toonify-mcp" class="nav-link" target="_blank">GITHUB</a>
                 </div>
             </div>
@@ -471,36 +447,21 @@
     <!-- Hero Section -->
     <section style="background: #F8FAFC; text-align: center;">
         <div class="brutalist-container">
-            <h1 class="hero-title" data-lang="en">
-                TOKEN OPTIMIZATION.<br>
-                DATA FIRST.
-            </h1>
-            <h1 class="hero-title" data-lang="zh-TW">
+            <h1 class="hero-title">
                 TOKEN 優化。<br>
                 數據至上。
             </h1>
 
-            <p class="hero-subtitle" data-lang="en">
-                MCP server tool that optimizes Claude Code context quota by converting<br>
-                large JSON/CSV outputs to ultra-compact TOON format
-            </p>
-            <p class="hero-subtitle" data-lang="zh-TW">
+            <p class="hero-subtitle">
                 MCP 伺服器工具，透過將大型 JSON/CSV 輸出轉換為<br>
                 超緊湊的 TOON 格式來優化 Claude Code context quota
             </p>
 
             <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 3rem; flex-wrap: wrap;">
-                <a href="https://github.com/PCIRCLE-AI/toonify-mcp" class="btn-brutalist" data-lang="en">
-                    ★ INSTALL NOW
-                </a>
-                <a href="https://github.com/PCIRCLE-AI/toonify-mcp" class="btn-brutalist" data-lang="zh-TW">
+                <a href="https://github.com/PCIRCLE-AI/toonify-mcp" class="btn-brutalist">
                     ★ 立即安裝
                 </a>
-
-                <a href="https://github.com/PCIRCLE-AI/toonify-mcp" class="btn-brutalist-secondary" target="_blank" data-lang="en">
-                    VIEW ON GITHUB →
-                </a>
-                <a href="https://github.com/PCIRCLE-AI/toonify-mcp" class="btn-brutalist-secondary" target="_blank" data-lang="zh-TW">
+                <a href="https://github.com/PCIRCLE-AI/toonify-mcp" class="btn-brutalist-secondary" target="_blank">
                     查看 GITHUB →
                 </a>
             </div>
@@ -519,16 +480,14 @@
     <section id="performance" style="background: #FFFFFF; border-top: 3px solid #000000; border-bottom: 3px solid #000000;">
         <div class="brutalist-container">
             <div style="text-align: center; margin-bottom: 3rem;">
-                <h2 class="section-title" data-lang="en">PERFORMANCE METRICS</h2>
-                <h2 class="section-title" data-lang="zh-TW">效能指標</h2>
+                <h2 class="section-title">效能指標</h2>
             </div>
 
             <div class="dashboard-grid">
                 <!-- Metric 1 -->
                 <div class="metric-card accent-orange">
                     <div class="metric-value">40-60<span style="font-size: 1.5rem;">%</span></div>
-                    <div class="metric-label" data-lang="en">TOKEN REDUCTION</div>
-                    <div class="metric-label" data-lang="zh-TW">TOKEN 減少率</div>
+                    <div class="metric-label">TOKEN 減少率</div>
                     <div class="data-bar">
                         <div class="data-bar-fill" style="width: 60%;"></div>
                     </div>
@@ -537,8 +496,7 @@
                 <!-- Metric 2 -->
                 <div class="metric-card accent-red">
                     <div class="metric-value">50-500<span style="font-size: 1.5rem;">×</span></div>
-                    <div class="metric-label" data-lang="en">CACHE PERFORMANCE</div>
-                    <div class="metric-label" data-lang="zh-TW">快取效能提升</div>
+                    <div class="metric-label">快取效能提升</div>
                     <div class="data-bar">
                         <div class="data-bar-fill" style="width: 95%; background: #FF0000;"></div>
                     </div>
@@ -547,8 +505,7 @@
                 <!-- Metric 3 -->
                 <div class="metric-card accent-yellow">
                     <div class="metric-value">0.1<span style="font-size: 1.5rem;">ms</span></div>
-                    <div class="metric-label" data-lang="en">CACHE HIT TIME</div>
-                    <div class="metric-label" data-lang="zh-TW">快取命中時間</div>
+                    <div class="metric-label">快取命中時間</div>
                     <div class="data-bar">
                         <div class="data-bar-fill" style="width: 2%; background: #FFFF00; border: 1px solid #000;"></div>
                     </div>
@@ -557,8 +514,7 @@
                 <!-- Metric 4 -->
                 <div class="metric-card">
                     <div class="metric-value">15<span style="font-size: 1.5rem;">+</span></div>
-                    <div class="metric-label" data-lang="en">LANGUAGES SUPPORTED</div>
-                    <div class="metric-label" data-lang="zh-TW">支援語言數量</div>
+                    <div class="metric-label">支援語言數量</div>
                     <div class="data-bar">
                         <div class="data-bar-fill" style="width: 75%;"></div>
                     </div>
@@ -571,24 +527,17 @@
     <section id="features" style="background: #F8FAFC;">
         <div class="brutalist-container">
             <div style="text-align: center; margin-bottom: 3rem;">
-                <h2 class="section-title" data-lang="en">KEY FEATURES</h2>
-                <h2 class="section-title" data-lang="zh-TW">核心功能</h2>
+                <h2 class="section-title">核心功能</h2>
             </div>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
                 <!-- Feature 1 -->
                 <div class="metric-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">⚡</div>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;" data-lang="en">
-                        AUTOMATIC OPTIMIZATION
-                    </h3>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;" data-lang="zh-TW">
+                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;">
                         自動優化
                     </h3>
-                    <p style="color: #64748B; line-height: 1.6;" data-lang="en">
-                        PostToolUse hook intercepts tool results and applies TOON format conversion transparently. Zero manual intervention.
-                    </p>
-                    <p style="color: #64748B; line-height: 1.6;" data-lang="zh-TW">
+                    <p style="color: #64748B; line-height: 1.6;">
                         PostToolUse hook 攔截工具結果並自動套用 TOON 格式轉換。完全無需手動操作。
                     </p>
                 </div>
@@ -596,16 +545,10 @@
                 <!-- Feature 2 -->
                 <div class="metric-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🚀</div>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;" data-lang="en">
-                        ENHANCED CACHING
-                    </h3>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;" data-lang="zh-TW">
+                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;">
                         增強快取系統
                     </h3>
-                    <p style="color: #64748B; line-height: 1.6;" data-lang="en">
-                        LRU cache with TTL expiration achieves 50-500× performance improvement on cache hits (~0.1ms vs 5-50ms).
-                    </p>
-                    <p style="color: #64748B; line-height: 1.6;" data-lang="zh-TW">
+                    <p style="color: #64748B; line-height: 1.6;">
                         LRU 快取搭配 TTL 過期機制，快取命中時效能提升 50-500 倍（~0.1ms vs 5-50ms）。
                     </p>
                 </div>
@@ -613,16 +556,10 @@
                 <!-- Feature 3 -->
                 <div class="metric-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🌍</div>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;" data-lang="en">
-                        MULTILINGUAL SUPPORT
-                    </h3>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;" data-lang="zh-TW">
+                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;">
                         多語言支援
                     </h3>
-                    <p style="color: #64748B; line-height: 1.6;" data-lang="en">
-                        Accurate token counting for 15+ languages with language-aware multipliers (2× Chinese, 2.5× Japanese, 3× Arabic).
-                    </p>
-                    <p style="color: #64748B; line-height: 1.6;" data-lang="zh-TW">
+                    <p style="color: #64748B; line-height: 1.6;">
                         精確的 15+ 語言 token 計數，具備語言感知乘數（2× 中文、2.5× 日文、3× 阿拉伯文）。
                     </p>
                 </div>
@@ -630,16 +567,10 @@
                 <!-- Feature 4 -->
                 <div class="metric-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🔧</div>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;" data-lang="en">
-                        ZERO CONFIGURATION
-                    </h3>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;" data-lang="zh-TW">
+                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;">
                         零設定
                     </h3>
-                    <p style="color: #64748B; line-height: 1.6;" data-lang="en">
-                        Works out of the box with sensible defaults. Optional configuration file for advanced customization.
-                    </p>
-                    <p style="color: #64748B; line-height: 1.6;" data-lang="zh-TW">
+                    <p style="color: #64748B; line-height: 1.6;">
                         開箱即用，預設配置合理。可選配置檔案提供進階客製化。
                     </p>
                 </div>
@@ -647,16 +578,10 @@
                 <!-- Feature 5 -->
                 <div class="metric-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🔄</div>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;" data-lang="en">
-                        DUAL MODE
-                    </h3>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;" data-lang="zh-TW">
+                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;">
                         雙模式運作
                     </h3>
-                    <p style="color: #64748B; line-height: 1.6;" data-lang="en">
-                        Works as Plugin (automatic) or MCP Server (manual). Choose the mode that fits your workflow.
-                    </p>
-                    <p style="color: #64748B; line-height: 1.6;" data-lang="zh-TW">
+                    <p style="color: #64748B; line-height: 1.6;">
                         支援 Plugin 模式（自動）或 MCP Server 模式（手動）。選擇適合你工作流程的模式。
                     </p>
                 </div>
@@ -664,16 +589,10 @@
                 <!-- Feature 6 -->
                 <div class="metric-card">
                     <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;" data-lang="en">
-                        BUILT-IN METRICS
-                    </h3>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;" data-lang="zh-TW">
+                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;">
                         內建數據追蹤
                     </h3>
-                    <p style="color: #64748B; line-height: 1.6;" data-lang="en">
-                        Track token savings locally with comprehensive statistics. Monitor cache hit rates and performance.
-                    </p>
-                    <p style="color: #64748B; line-height: 1.6;" data-lang="zh-TW">
+                    <p style="color: #64748B; line-height: 1.6;">
                         本地追蹤 token 節省量，提供完整統計數據。監控快取命中率與效能表現。
                     </p>
                 </div>
@@ -685,8 +604,7 @@
     <section style="background: #FFFFFF; border-top: 3px solid #000000; border-bottom: 3px solid #000000;">
         <div class="brutalist-container">
             <div style="text-align: center; margin-bottom: 3rem;">
-                <h2 class="section-title" data-lang="en">TECHNICAL WORKFLOW</h2>
-                <h2 class="section-title" data-lang="zh-TW">技術流程</h2>
+                <h2 class="section-title">技術流程</h2>
             </div>
 
             <div style="max-width: 800px; margin: 0 auto;">
@@ -694,14 +612,10 @@
                 <div class="step-card">
                     <div class="step-number">01</div>
                     <div class="step-content">
-                        <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 0.5rem;" data-lang="en">
-                            USER READS LARGE JSON FILE
-                        </h3>
-                        <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 0.5rem;" data-lang="zh-TW">
+                        <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 0.5rem;">
                             使用者讀取大型 JSON 檔案
                         </h3>
-                        <p style="color: #64748B;" data-lang="en">Claude Code calls Read tool to fetch file contents</p>
-                        <p style="color: #64748B;" data-lang="zh-TW">Claude Code 呼叫 Read 工具獲取檔案內容</p>
+                        <p style="color: #64748B;">Claude Code 呼叫 Read 工具獲取檔案內容</p>
                     </div>
                 </div>
 
@@ -709,14 +623,10 @@
                 <div class="step-card">
                     <div class="step-number">02</div>
                     <div class="step-content">
-                        <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 0.5rem;" data-lang="en">
-                            POSTTOOLUSE HOOK INTERCEPTS
-                        </h3>
-                        <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 0.5rem;" data-lang="zh-TW">
+                        <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 0.5rem;">
                             POSTTOOLUSE HOOK 攔截結果
                         </h3>
-                        <p style="color: #64748B;" data-lang="en">Hook automatically checks if content should be optimized</p>
-                        <p style="color: #64748B;" data-lang="zh-TW">Hook 自動檢查內容是否應該優化</p>
+                        <p style="color: #64748B;">Hook 自動檢查內容是否應該優化</p>
                     </div>
                 </div>
 
@@ -724,14 +634,10 @@
                 <div class="step-card">
                     <div class="step-number">03</div>
                     <div class="step-content">
-                        <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 0.5rem;" data-lang="en">
-                            TOON FORMAT CONVERSION
-                        </h3>
-                        <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 0.5rem;" data-lang="zh-TW">
+                        <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 0.5rem;">
                             TOON 格式轉換
                         </h3>
-                        <p style="color: #64748B;" data-lang="en">JSON/CSV/YAML converted to compact TOON representation</p>
-                        <p style="color: #64748B;" data-lang="zh-TW">JSON/CSV/YAML 轉換為緊湊的 TOON 表示格式</p>
+                        <p style="color: #64748B;">JSON/CSV/YAML 轉換為緊湊的 TOON 表示格式</p>
                     </div>
                 </div>
 
@@ -739,14 +645,10 @@
                 <div class="step-card">
                     <div class="step-number">04</div>
                     <div class="step-content">
-                        <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 0.5rem;" data-lang="en">
-                            OPTIMIZED CONTENT SENT TO API
-                        </h3>
-                        <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 0.5rem;" data-lang="zh-TW">
+                        <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 0.5rem;">
                             優化內容傳送至 API
                         </h3>
-                        <p style="color: #64748B;" data-lang="en">40-60% typical token reduction achieved ✨</p>
-                        <p style="color: #64748B;" data-lang="zh-TW">實現典型 40-60% token 減少量 ✨</p>
+                        <p style="color: #64748B;">實現典型 40-60% token 減少量 ✨</p>
                     </div>
                 </div>
             </div>
@@ -757,53 +659,46 @@
     <section id="install" style="background: #F8FAFC;">
         <div class="brutalist-container">
             <div style="text-align: center; margin-bottom: 3rem;">
-                <h2 class="section-title" data-lang="en">INSTALLATION</h2>
-                <h2 class="section-title" data-lang="zh-TW">安裝步驟</h2>
+                <h2 class="section-title">安裝步驟</h2>
             </div>
 
             <div style="max-width: 900px; margin: 0 auto;">
                 <!-- Option A -->
                 <div style="margin-bottom: 2rem;">
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; font-size: 1.5rem; margin-bottom: 1rem;" data-lang="en">
-                        OPTION A: NPM INSTALL
-                    </h3>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; font-size: 1.5rem; margin-bottom: 1rem;" data-lang="zh-TW">
+                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; font-size: 1.5rem; margin-bottom: 1rem;">
                         選項 A：NPM 安裝
                     </h3>
                     <div class="code-block">
                         <div class="code-content">
-<span style="color: #666;"># Install globally</span>
+<span style="color: #666;"># 全域安裝</span>
 npm install -g toonify-mcp
 
-<span style="color: #666;"># Add as plugin (automatic mode)</span>
+<span style="color: #666;"># 新增為 plugin（自動模式）</span>
 claude plugin add toonify-mcp
 
-<span style="color: #666;"># Verify installation</span>
+<span style="color: #666;"># 驗證安裝</span>
 claude plugin list
-<span style="color: #666;"># Should show: toonify-mcp ✓</span>
+<span style="color: #666;"># 應顯示：toonify-mcp ✓</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Option B -->
                 <div>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; font-size: 1.5rem; margin-bottom: 1rem;" data-lang="en">
-                        OPTION B: MCP SERVER MODE
-                    </h3>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; font-size: 1.5rem; margin-bottom: 1rem;" data-lang="zh-TW">
+                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; font-size: 1.5rem; margin-bottom: 1rem;">
                         選項 B：MCP SERVER 模式
                     </h3>
                     <div class="code-block">
                         <div class="code-content">
-<span style="color: #666;"># Install globally</span>
+<span style="color: #666;"># 全域安裝</span>
 npm install -g toonify-mcp
 
-<span style="color: #666;"># Register as MCP server</span>
+<span style="color: #666;"># 註冊為 MCP server</span>
 claude mcp add toonify -- toonify-mcp
 
-<span style="color: #666;"># Verify</span>
+<span style="color: #666;"># 驗證</span>
 claude mcp list
-<span style="color: #666;"># Should show: toonify: toonify-mcp - ✓ Connected</span>
+<span style="color: #666;"># 應顯示：toonify: toonify-mcp - ✓ Connected</span>
                         </div>
                     </div>
                 </div>
@@ -815,48 +710,37 @@ claude mcp list
     <section style="background: #FFFFFF; border-top: 3px solid #000000; border-bottom: 3px solid #000000;">
         <div class="brutalist-container">
             <div style="text-align: center; margin-bottom: 3rem;">
-                <h2 class="section-title" data-lang="en">DATA COMPARISON</h2>
-                <h2 class="section-title" data-lang="zh-TW">數據對比</h2>
+                <h2 class="section-title">數據對比</h2>
             </div>
 
             <div style="max-width: 1000px; margin: 0 auto;">
                 <table class="comparison-table">
                     <thead>
                         <tr>
-                            <th data-lang="en">METRIC</th>
-                            <th data-lang="zh-TW">指標</th>
-
-                            <th data-lang="en">BEFORE</th>
-                            <th data-lang="zh-TW">優化前</th>
-
-                            <th data-lang="en">AFTER</th>
-                            <th data-lang="zh-TW">優化後</th>
-
-                            <th data-lang="en">REDUCTION</th>
-                            <th data-lang="zh-TW">減少率</th>
+                            <th>指標</th>
+                            <th>優化前</th>
+                            <th>優化後</th>
+                            <th>減少率</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td data-lang="en">Tokens</td>
-                            <td data-lang="zh-TW">Token 數量</td>
+                            <td>Token 數量</td>
                             <td>142</td>
                             <td>57</td>
                             <td style="color: #F97316; font-weight: 700;">-60%</td>
                         </tr>
                         <tr>
-                            <td data-lang="en">Cache Hit Time</td>
-                            <td data-lang="zh-TW">快取命中時間</td>
+                            <td>快取命中時間</td>
                             <td>5-50ms</td>
                             <td style="color: #3B82F6; font-weight: 700;">~0.1ms</td>
                             <td style="color: #F97316; font-weight: 700;">50-500×</td>
                         </tr>
                         <tr>
-                            <td data-lang="en">Processing Time</td>
-                            <td data-lang="zh-TW">處理時間</td>
-                            <td>Standard</td>
-                            <td style="color: #3B82F6; font-weight: 700;">Optimized</td>
-                            <td style="color: #F97316; font-weight: 700;">Faster</td>
+                            <td>處理時間</td>
+                            <td>標準</td>
+                            <td style="color: #3B82F6; font-weight: 700;">優化</td>
+                            <td style="color: #F97316; font-weight: 700;">更快</td>
                         </tr>
                     </tbody>
                 </table>
@@ -864,10 +748,7 @@ claude mcp list
                 <div style="margin-top: 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                     <!-- Before -->
                     <div>
-                        <div style="background: #000; color: #FF0000; padding: 0.5rem; font-family: 'Fira Code', monospace; font-weight: 700; text-align: center; border: 3px solid #000;" data-lang="en">
-                            BEFORE (142 TOKENS)
-                        </div>
-                        <div style="background: #000; color: #FF0000; padding: 0.5rem; font-family: 'Fira Code', monospace; font-weight: 700; text-align: center; border: 3px solid #000;" data-lang="zh-TW">
+                        <div style="background: #000; color: #FF0000; padding: 0.5rem; font-family: 'Fira Code', monospace; font-weight: 700; text-align: center; border: 3px solid #000;">
                             優化前 (142 TOKENS)
                         </div>
                         <div class="code-block" style="margin-top: 0;">
@@ -888,10 +769,7 @@ claude mcp list
 
                     <!-- After -->
                     <div>
-                        <div style="background: #3B82F6; color: #FFF; padding: 0.5rem; font-family: 'Fira Code', monospace; font-weight: 700; text-align: center; border: 3px solid #000;" data-lang="en">
-                            AFTER (57 TOKENS, -60%)
-                        </div>
-                        <div style="background: #3B82F6; color: #FFF; padding: 0.5rem; font-family: 'Fira Code', monospace; font-weight: 700; text-align: center; border: 3px solid #000;" data-lang="zh-TW">
+                        <div style="background: #3B82F6; color: #FFF; padding: 0.5rem; font-family: 'Fira Code', monospace; font-weight: 700; text-align: center; border: 3px solid #000;">
                             優化後 (57 TOKENS, -60%)
                         </div>
                         <div class="code-block" style="margin-top: 0;">
@@ -911,32 +789,19 @@ claude mcp list
     <!-- CTA Section -->
     <section class="cta-section" style="text-align: center;">
         <div class="brutalist-container" style="position: relative; z-index: 1;">
-            <h2 style="font-family: 'Fira Code', monospace; font-weight: 700; font-size: clamp(2rem, 5vw, 3rem); color: #FFFFFF; margin-bottom: 1rem;" data-lang="en">
-                READY TO OPTIMIZE?
-            </h2>
-            <h2 style="font-family: 'Fira Code', monospace; font-weight: 700; font-size: clamp(2rem, 5vw, 3rem); color: #FFFFFF; margin-bottom: 1rem;" data-lang="zh-TW">
+            <h2 style="font-family: 'Fira Code', monospace; font-weight: 700; font-size: clamp(2rem, 5vw, 3rem); color: #FFFFFF; margin-bottom: 1rem;">
                 準備好優化了嗎？
             </h2>
 
-            <p style="color: rgba(255,255,255,0.9); font-size: 1.25rem; margin-bottom: 2rem;" data-lang="en">
-                Join developers saving 40-60% on Claude API token costs
-            </p>
-            <p style="color: rgba(255,255,255,0.9); font-size: 1.25rem; margin-bottom: 2rem;" data-lang="zh-TW">
+            <p style="color: rgba(255,255,255,0.9); font-size: 1.25rem; margin-bottom: 2rem;">
                 加入節省 40-60% Claude API token 成本的開發者行列
             </p>
 
             <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-                <a href="https://github.com/PCIRCLE-AI/toonify-mcp" class="btn-brutalist" style="background: #000; border-color: #000;" data-lang="en">
-                    ★ STAR ON GITHUB
-                </a>
-                <a href="https://github.com/PCIRCLE-AI/toonify-mcp" class="btn-brutalist" style="background: #000; border-color: #000;" data-lang="zh-TW">
+                <a href="https://github.com/PCIRCLE-AI/toonify-mcp" class="btn-brutalist" style="background: #000; border-color: #000;">
                     ★ GITHUB 點星星
                 </a>
-
-                <a href="https://www.npmjs.com/package/toonify-mcp" class="btn-brutalist-secondary" style="background: transparent; color: #FFF; border-color: #FFF;" data-lang="en">
-                    INSTALL FROM NPM →
-                </a>
-                <a href="https://www.npmjs.com/package/toonify-mcp" class="btn-brutalist-secondary" style="background: transparent; color: #FFF; border-color: #FFF;" data-lang="zh-TW">
+                <a href="https://www.npmjs.com/package/toonify-mcp" class="btn-brutalist-secondary" style="background: transparent; color: #FFF; border-color: #FFF;">
                     從 NPM 安裝 →
                 </a>
             </div>
@@ -949,52 +814,34 @@ claude mcp list
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
                 <div>
                     <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; color: #60A5FA; margin-bottom: 1rem;">TOONIFY_MCP</h3>
-                    <p style="color: #94A3B8; line-height: 1.6;" data-lang="en">
-                        Free & open-source token optimization plugin for Claude Code. MIT Licensed.
-                    </p>
-                    <p style="color: #94A3B8; line-height: 1.6;" data-lang="zh-TW">
+                    <p style="color: #94A3B8; line-height: 1.6;">
                         Claude Code 免費開源 token 優化插件。MIT 授權。
                     </p>
                 </div>
                 <div>
-                    <h4 style="font-family: 'Fira Code', monospace; font-weight: 700; color: #FFFFFF; margin-bottom: 1rem;" data-lang="en">RESOURCES</h4>
-                    <h4 style="font-family: 'Fira Code', monospace; font-weight: 700; color: #FFFFFF; margin-bottom: 1rem;" data-lang="zh-TW">資源</h4>
+                    <h4 style="font-family: 'Fira Code', monospace; font-weight: 700; color: #FFFFFF; margin-bottom: 1rem;">資源</h4>
                     <ul style="list-style: none; color: #94A3B8; line-height: 2;">
-                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp#readme" data-lang="en">Documentation</a></li>
-                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp#readme" data-lang="zh-TW">文檔</a></li>
-
-                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/blob/main/CONTRIBUTING.md" data-lang="en">Contributing</a></li>
-                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/blob/main/CONTRIBUTING.md" data-lang="zh-TW">貢獻指南</a></li>
-
-                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/blob/main/CHANGELOG.md">Changelog</a></li>
-                        <li><a href="https://www.npmjs.com/package/toonify-mcp">npm Package</a></li>
+                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp#readme">文檔</a></li>
+                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/blob/main/CONTRIBUTING.md">貢獻指南</a></li>
+                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/blob/main/CHANGELOG.md">更新日誌</a></li>
+                        <li><a href="https://www.npmjs.com/package/toonify-mcp">npm 套件</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 style="font-family: 'Fira Code', monospace; font-weight: 700; color: #FFFFFF; margin-bottom: 1rem;" data-lang="en">COMMUNITY</h4>
-                    <h4 style="font-family: 'Fira Code', monospace; font-weight: 700; color: #FFFFFF; margin-bottom: 1rem;" data-lang="zh-TW">社群</h4>
+                    <h4 style="font-family: 'Fira Code', monospace; font-weight: 700; color: #FFFFFF; margin-bottom: 1rem;">社群</h4>
                     <ul style="list-style: none; color: #94A3B8; line-height: 2;">
                         <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp">GitHub</a></li>
-                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/issues">Issues</a></li>
-                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/discussions" data-lang="en">Discussions</a></li>
-                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/discussions" data-lang="zh-TW">討論區</a></li>
-
+                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/issues">問題回報</a></li>
+                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/discussions">討論區</a></li>
                         <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/pulls">Pull Requests</a></li>
                     </ul>
                 </div>
             </div>
             <div style="border-top: 2px solid #334155; padding-top: 2rem; text-align: center; color: #64748B;">
-                <p style="margin-bottom: 0.5rem;" data-lang="en">
-                    <strong style="color: #FFFFFF;">MIT License</strong> - Free to use, modify, and distribute
-                </p>
-                <p style="margin-bottom: 0.5rem;" data-lang="zh-TW">
+                <p style="margin-bottom: 0.5rem;">
                     <strong style="color: #FFFFFF;">MIT 授權</strong> - 自由使用、修改與散布
                 </p>
-
-                <p data-lang="en">
-                    Copyright © 2024-2025 PCIRCLE AI. Built with data-driven precision.
-                </p>
-                <p data-lang="zh-TW">
+                <p>
                     版權所有 © 2024-2025 PCIRCLE AI. 以數據驅動的精準度打造。
                 </p>
             </div>
@@ -1002,26 +849,6 @@ claude mcp list
     </footer>
 
     <script>
-        // Language Switcher
-        const langSwitch = document.getElementById('langSwitch');
-        const html = document.documentElement;
-
-        // Check for saved language preference or default to English
-        const currentLang = localStorage.getItem('lang') || 'en';
-        if (currentLang === 'zh-TW') {
-            html.setAttribute('lang', 'zh-TW');
-        }
-
-        langSwitch.addEventListener('click', () => {
-            if (html.getAttribute('lang') === 'zh-TW') {
-                html.setAttribute('lang', 'en');
-                localStorage.setItem('lang', 'en');
-            } else {
-                html.setAttribute('lang', 'zh-TW');
-                localStorage.setItem('lang', 'zh-TW');
-            }
-        });
-
         // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
