@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toonify MCP - Free & Open Source Token Optimization Plugin</title>
+    <meta name="description" content="Free & open-source MCP plugin for Claude Code. Automatically reduces token usage by 30-65% for structured data through transparent TOON format conversion.">
+
+    <!-- Google Fonts: JetBrains Mono + IBM Plex Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['IBM Plex Sans', 'system-ui', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'Monaco', 'Menlo', 'monospace']
+                    },
+                    colors: {
+                        'trust-blue': '#2563EB',
+                        'trust-blue-dark': '#1E40AF',
+                        'cta-orange': '#F97316',
+                        'cta-orange-dark': '#EA580C',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Dark Mode Variables */
+        :root {
+            --bg-primary: #F8FAFC;
+            --bg-secondary: #FFFFFF;
+            --bg-tertiary: #F1F5F9;
+            --text-primary: #1E293B;
+            --text-secondary: #475569;
+            --text-tertiary: #64748B;
+            --border-color: #E2E8F0;
+            --code-bg: #1E293B;
+        }
+
+        .dark {
+            --bg-primary: #0F172A;
+            --bg-secondary: #1E293B;
+            --bg-tertiary: #334155;
+            --text-primary: #F8FAFC;
+            --text-secondary: #CBD5E1;
+            --text-tertiary: #94A3B8;
+            --border-color: #334155;
+            --code-bg: #0F172A;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 300ms ease, color 300ms ease;
+        }
+
+        /* Typography */
+        .heading-mono {
+            font-family: 'JetBrains Mono', Monaco, Menlo, monospace;
+        }
+
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .dark .gradient-text {
+            background: linear-gradient(135deg, #60A5FA 0%, #93C5FD 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Bento Box Grid - Featured Cards */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .bento-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .bento-large {
+                grid-column: span 2;
+            }
+            .bento-tall {
+                grid-row: span 2;
+            }
+        }
+
+        /* Feature Cards with Soft UI */
+        .feature-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.03) 0%, rgba(59, 130, 246, 0.03) 100%);
+            opacity: 0;
+            transition: opacity 250ms ease;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px -8px rgba(37, 99, 235, 0.12);
+            border-color: #2563EB;
+        }
+
+        .dark .feature-card:hover {
+            box-shadow: 0 12px 24px -8px rgba(96, 165, 250, 0.2);
+            border-color: #3B82F6;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            overflow-x: auto;
+            position: relative;
+            font-family: 'JetBrains Mono', Monaco, Menlo, monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        .code-block code {
+            color: #E2E8F0;
+        }
+
+        .dark .code-block {
+            background: #0A0F1E;
+            border-color: #1E293B;
+        }
+
+        /* Syntax Highlighting */
+        .keyword { color: #C792EA; }
+        .string { color: #A5D6FF; }
+        .number { color: #F78C6C; }
+        .comment { color: #6A737D; }
+        .property { color: #82AAFF; }
+        .punctuation { color: #89DDFF; }
+
+        /* CTA Buttons */
+        .btn-primary {
+            background: #F97316;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 200ms ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background: #EA580C;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 16px -4px rgba(249, 115, 22, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #2563EB;
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 200ms ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #2563EB;
+            cursor: pointer;
+        }
+
+        .dark .btn-secondary {
+            color: #60A5FA;
+            border-color: #60A5FA;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .dark .btn-secondary:hover {
+            background: rgba(96, 165, 250, 0.1);
+        }
+
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 3.5rem;
+            height: 3.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 200ms ease;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+            color: white;
+        }
+
+        /* Stats Counter Animation */
+        @keyframes countUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stat-item {
+            animation: countUp 0.6s ease-out forwards;
+        }
+
+        /* Navigation Shadow on Scroll */
+        .nav-scrolled {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark .nav-scrolled {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Loading State for Code Examples */
+        .code-loading {
+            position: relative;
+        }
+
+        .code-loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Dark Mode Toggle -->
+    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode">
+        <svg class="sun-icon" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg class="moon-icon hidden" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+    </button>
+
+    <!-- Navigation -->
+    <nav id="mainNav" style="background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 50; transition: box-shadow 200ms ease;">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="text-2xl font-bold heading-mono gradient-text">Toonify MCP</div>
+                    <span class="badge">Open Source</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#features" style="color: var(--text-secondary);" class="hover:text-blue-600 dark:hover:text-blue-400 font-medium transition">Features</a>
+                    <a href="#how-it-works" style="color: var(--text-secondary);" class="hover:text-blue-600 dark:hover:text-blue-400 font-medium transition">How It Works</a>
+                    <a href="#installation" style="color: var(--text-secondary);" class="hover:text-blue-600 dark:hover:text-blue-400 font-medium transition">Installation</a>
+                    <a href="#examples" style="color: var(--text-secondary);" class="hover:text-blue-600 dark:hover:text-blue-400 font-medium transition">Examples</a>
+                    <a href="https://github.com/PCIRCLE-AI/toonify-mcp" style="color: var(--text-secondary);" class="hover:text-blue-600 dark:hover:text-blue-400 font-medium transition" target="_blank">GitHub</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="py-20" style="background: var(--bg-primary);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-5xl md:text-6xl font-bold heading-mono mb-6" style="color: var(--text-primary);">
+                Free & Open Source<br>
+                <span class="gradient-text">Token Optimization for Claude Code</span>
+            </h1>
+
+            <!-- GitHub Badges -->
+            <div class="flex justify-center flex-wrap gap-3 mb-6">
+                <img src="https://img.shields.io/github/stars/PCIRCLE-AI/toonify-mcp?style=social" alt="GitHub stars">
+                <img src="https://img.shields.io/github/forks/PCIRCLE-AI/toonify-mcp?style=social" alt="GitHub forks">
+                <img src="https://img.shields.io/github/license/PCIRCLE-AI/toonify-mcp" alt="License">
+                <img src="https://img.shields.io/badge/version-0.4.0-blue" alt="Version">
+                <img src="https://img.shields.io/npm/dm/toonify-mcp" alt="npm downloads">
+            </div>
+
+            <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto" style="color: var(--text-secondary);">
+                Automatically reduce Claude API token usage by <strong style="color: var(--text-primary);">30-65%</strong> (typically 50-55%) for JSON, CSV, and YAML data through transparent TOON format conversion.
+            </p>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
+                <a href="https://github.com/PCIRCLE-AI/toonify-mcp" class="btn-primary">
+                    ⭐ Star on GitHub
+                </a>
+                <a href="https://github.com/PCIRCLE-AI/toonify-mcp" class="btn-secondary" target="_blank">
+                    View on GitHub →
+                </a>
+            </div>
+
+            <div class="text-sm" style="color: var(--text-tertiary);">
+                MIT Licensed • Free Forever • Community Driven
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Stats -->
+    <section class="py-12" style="background: var(--bg-secondary); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+                <div class="stat-item">
+                    <div class="text-4xl font-bold heading-mono gradient-text mb-2">30-65%</div>
+                    <div style="color: var(--text-secondary);">Token Reduction</div>
+                </div>
+                <div class="stat-item" style="animation-delay: 0.1s;">
+                    <div class="text-4xl font-bold heading-mono gradient-text mb-2">50-500x</div>
+                    <div style="color: var(--text-secondary);">Cache Performance</div>
+                </div>
+                <div class="stat-item" style="animation-delay: 0.2s;">
+                    <div class="text-4xl font-bold heading-mono gradient-text mb-2">15+</div>
+                    <div style="color: var(--text-secondary);">Languages Supported</div>
+                </div>
+                <div class="stat-item" style="animation-delay: 0.3s;">
+                    <div class="text-4xl font-bold heading-mono gradient-text mb-2">100%</div>
+                    <div style="color: var(--text-secondary);">Automatic</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section - Bento Box Grid -->
+    <section id="features" class="py-16" style="background: var(--bg-primary);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold heading-mono mb-4" style="color: var(--text-primary);">Key Features</h2>
+                <p class="text-xl" style="color: var(--text-secondary);">Built for developers who care about efficiency</p>
+            </div>
+
+            <div class="bento-grid">
+                <div class="feature-card bento-large">
+                    <div class="text-3xl mb-4">🎯</div>
+                    <h3 class="text-xl font-bold mb-3 heading-mono" style="color: var(--text-primary);">Automatic Optimization</h3>
+                    <p style="color: var(--text-secondary);">
+                        PostToolUse hook intercepts tool results and applies TOON format conversion transparently. No manual calls needed.
+                    </p>
+                    <div class="mt-4 p-3 rounded-lg" style="background: var(--bg-tertiary);">
+                        <code class="text-sm font-mono" style="color: var(--text-secondary);">
+                            claude plugin add toonify-mcp
+                        </code>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="text-3xl mb-4">⚡</div>
+                    <h3 class="text-xl font-bold mb-3 heading-mono" style="color: var(--text-primary);">Enhanced Caching</h3>
+                    <p style="color: var(--text-secondary);">
+                        LRU cache with TTL expiration achieves 50-500x performance improvement on cache hits (~0.1ms vs 5-50ms).
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="text-3xl mb-4">🌍</div>
+                    <h3 class="text-xl font-bold mb-3 heading-mono" style="color: var(--text-primary);">Multilingual Support</h3>
+                    <p style="color: var(--text-secondary);">
+                        Accurate token counting for 15+ languages with language-aware multipliers (2x Chinese, 2.5x Japanese, 3x Arabic).
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="text-3xl mb-4">🔧</div>
+                    <h3 class="text-xl font-bold mb-3 heading-mono" style="color: var(--text-primary);">Zero Configuration</h3>
+                    <p style="color: var(--text-secondary);">
+                        Works out of the box with sensible defaults. Optional configuration file for advanced customization.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="text-3xl mb-4">🔄</div>
+                    <h3 class="text-xl font-bold mb-3 heading-mono" style="color: var(--text-primary);">Dual Mode</h3>
+                    <p style="color: var(--text-secondary);">
+                        Works as Plugin (automatic) or MCP Server (manual). Choose the mode that fits your workflow.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="text-3xl mb-4">📊</div>
+                    <h3 class="text-xl font-bold mb-3 heading-mono" style="color: var(--text-primary);">Built-in Metrics</h3>
+                    <p style="color: var(--text-secondary);">
+                        Track token savings locally with comprehensive statistics. Monitor cache hit rates and performance.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="py-16" style="background: var(--bg-secondary);">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold heading-mono mb-4" style="color: var(--text-primary);">How It Works</h2>
+                <p class="text-xl" style="color: var(--text-secondary);">Transparent optimization in Plugin mode</p>
+            </div>
+
+            <div class="feature-card p-8">
+                <div class="space-y-6">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold mr-4">1</div>
+                        <div>
+                            <h3 class="font-bold mb-1" style="color: var(--text-primary);">User reads large JSON file</h3>
+                            <p style="color: var(--text-secondary);">Claude Code calls Read tool to fetch file contents</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold mr-4">2</div>
+                        <div>
+                            <h3 class="font-bold mb-1" style="color: var(--text-primary);">PostToolUse hook intercepts result</h3>
+                            <p style="color: var(--text-secondary);">Hook automatically checks if content should be optimized</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold mr-4">3</div>
+                        <div>
+                            <h3 class="font-bold mb-1" style="color: var(--text-primary);">TOON format conversion</h3>
+                            <p style="color: var(--text-secondary);">JSON/CSV/YAML converted to compact TOON representation</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold mr-4">4</div>
+                        <div>
+                            <h3 class="font-bold mb-1" style="color: var(--text-primary);">Optimized content sent to Claude API</h3>
+                            <p style="color: var(--text-secondary);">50-55% typical token reduction achieved ✨</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Installation -->
+    <section id="installation" class="py-16" style="background: var(--bg-primary);">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold heading-mono mb-4" style="color: var(--text-primary);">Installation</h2>
+                <p class="text-xl" style="color: var(--text-secondary);">Get started in minutes</p>
+            </div>
+
+            <div class="space-y-8">
+                <!-- Option A -->
+                <div class="feature-card p-8">
+                    <h3 class="text-2xl font-bold heading-mono mb-4" style="color: var(--text-primary);">
+                        <span class="gradient-text">Option A:</span> Install from npm
+                    </h3>
+                    <div class="code-block">
+                        <code><span class="comment"># Install globally</span>
+npm install -g toonify-mcp
+
+<span class="comment"># Add as plugin (automatic mode)</span>
+claude plugin add toonify-mcp
+
+<span class="comment"># Verify installation</span>
+claude plugin list
+<span class="comment"># Should show: toonify-mcp ✓</span></code>
+                    </div>
+                    <p class="mt-4" style="color: var(--text-secondary);">
+                        <strong style="color: var(--text-primary);">That's it!</strong> The PostToolUse hook will now automatically intercept and optimize structured data from Read, Grep, and other file tools.
+                    </p>
+                </div>
+
+                <!-- Option B -->
+                <div class="feature-card p-8">
+                    <h3 class="text-2xl font-bold heading-mono mb-4" style="color: var(--text-primary);">
+                        <span class="gradient-text">Option B:</span> MCP Server Mode
+                    </h3>
+                    <div class="code-block">
+                        <code><span class="comment"># Install globally</span>
+npm install -g toonify-mcp
+
+<span class="comment"># Register as MCP server</span>
+claude mcp add toonify -- toonify-mcp
+
+<span class="comment"># Verify</span>
+claude mcp list
+<span class="comment"># Should show: toonify: toonify-mcp - ✓ Connected</span></code>
+                    </div>
+                    <p class="mt-4" style="color: var(--text-secondary);">
+                        For explicit control or non-Claude Code MCP clients. Call tools manually when needed.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Examples -->
+    <section id="examples" class="py-16" style="background: var(--bg-secondary);">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold heading-mono mb-4" style="color: var(--text-primary);">Examples</h2>
+                <p class="text-xl" style="color: var(--text-secondary);">See the token reduction in action</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="feature-card p-6">
+                    <h3 class="text-xl font-bold heading-mono mb-4" style="color: var(--text-primary);">Before Optimization (142 tokens)</h3>
+                    <div class="code-block">
+                        <code><span class="punctuation">{</span>
+  <span class="property">"products"</span><span class="punctuation">:</span> <span class="punctuation">[</span>
+    <span class="punctuation">{</span><span class="property">"id"</span><span class="punctuation">:</span> <span class="number">101</span><span class="punctuation">,</span> <span class="property">"name"</span><span class="punctuation">:</span> <span class="string">"Laptop Pro"</span><span class="punctuation">,</span> <span class="property">"price"</span><span class="punctuation">:</span> <span class="number">1299</span><span class="punctuation">},</span>
+    <span class="punctuation">{</span><span class="property">"id"</span><span class="punctuation">:</span> <span class="number">102</span><span class="punctuation">,</span> <span class="property">"name"</span><span class="punctuation">:</span> <span class="string">"Magic Mouse"</span><span class="punctuation">,</span> <span class="property">"price"</span><span class="punctuation">:</span> <span class="number">79</span><span class="punctuation">}</span>
+  <span class="punctuation">]</span>
+<span class="punctuation">}</span></code>
+                    </div>
+                </div>
+
+                <div class="feature-card p-6">
+                    <h3 class="text-xl font-bold heading-mono mb-4" style="color: var(--text-primary);">After Optimization (57 tokens, <span class="gradient-text">-60%</span>)</h3>
+                    <div class="code-block">
+                        <code><span class="punctuation">[</span><span class="keyword">TOON-JSON</span><span class="punctuation">]</span>
+<span class="property">products</span><span class="punctuation">[</span><span class="number">2</span><span class="punctuation">]{</span><span class="property">id</span><span class="punctuation">,</span><span class="property">name</span><span class="punctuation">,</span><span class="property">price</span><span class="punctuation">}:</span>
+  <span class="number">101</span><span class="punctuation">,</span>Laptop Pro<span class="punctuation">,</span><span class="number">1299</span>
+  <span class="number">102</span><span class="punctuation">,</span>Magic Mouse<span class="punctuation">,</span><span class="number">79</span></code>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 text-center" style="color: var(--text-secondary);">
+                <strong style="color: var(--text-primary);">Automatically applied in Plugin mode</strong> - no manual calls needed!
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20" style="background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-4xl md:text-5xl font-bold heading-mono text-white mb-6">
+                Ready to Optimize Your Token Usage?
+            </h2>
+            <p class="text-xl text-blue-100 mb-8">
+                Join developers who are saving 30-65% on Claude API token costs
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="https://github.com/PCIRCLE-AI/toonify-mcp" class="btn-primary" style="background: white; color: #2563EB;">
+                    ⭐ Star on GitHub
+                </a>
+                <a href="https://www.npmjs.com/package/toonify-mcp" class="btn-secondary" style="border-color: white; color: white;">
+                    Install from npm →
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: var(--bg-secondary); border-top: 1px solid var(--border-color);" class="py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h3 class="text-xl font-bold heading-mono mb-4 gradient-text">Toonify MCP</h3>
+                    <p style="color: var(--text-secondary);">
+                        Free & open-source token optimization plugin for Claude Code. MIT Licensed.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4" style="color: var(--text-primary);">Resources</h4>
+                    <ul class="space-y-2" style="color: var(--text-secondary);">
+                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp#readme" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Documentation</a></li>
+                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/blob/main/CONTRIBUTING.md" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Contributing Guide</a></li>
+                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/blob/main/CHANGELOG.md" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Changelog</a></li>
+                        <li><a href="https://www.npmjs.com/package/toonify-mcp" class="hover:text-blue-600 dark:hover:text-blue-400 transition">npm Package</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4" style="color: var(--text-primary);">Community</h4>
+                    <ul class="space-y-2" style="color: var(--text-secondary);">
+                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp" class="hover:text-blue-600 dark:hover:text-blue-400 transition">GitHub</a></li>
+                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/issues" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Issues</a></li>
+                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/discussions" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Discussions</a></li>
+                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/pulls" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Pull Requests</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="pt-8 text-center" style="border-top: 1px solid var(--border-color); color: var(--text-tertiary);">
+                <p class="mb-2">
+                    <strong style="color: var(--text-primary);">MIT License</strong> - Free to use, modify, and distribute
+                </p>
+                <p>
+                    Copyright © 2024-2025 PCIRCLE AI. Built with ❤️ by developers, for developers.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Dark Mode Toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const html = document.documentElement;
+        const sunIcon = darkModeToggle.querySelector('.sun-icon');
+        const moonIcon = darkModeToggle.querySelector('.moon-icon');
+
+        // Check for saved theme preference or default to light mode
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        if (currentTheme === 'dark') {
+            html.classList.add('dark');
+            sunIcon.classList.add('hidden');
+            moonIcon.classList.remove('hidden');
+        }
+
+        darkModeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+
+            if (html.classList.contains('dark')) {
+                localStorage.setItem('theme', 'dark');
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            } else {
+                localStorage.setItem('theme', 'light');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            }
+        });
+
+        // Navigation Shadow on Scroll
+        const nav = document.getElementById('mainNav');
+        let lastScroll = 0;
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+
+            if (currentScroll > 10) {
+                nav.classList.add('nav-scrolled');
+            } else {
+                nav.classList.remove('nav-scrolled');
+            }
+
+            lastScroll = currentScroll;
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
