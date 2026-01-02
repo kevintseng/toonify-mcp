@@ -3,680 +3,459 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toonify MCP - Token Optimization. Data First.</title>
-    <meta name="description" content="Ultra-compact TOON format conversion. 40-60% token savings. Data-driven efficiency.">
+    <title>Toonify MCP - Free & Open Source Token Optimization Plugin</title>
+    <meta name="description" content="Free & open-source MCP plugin for Claude Code. Automatically reduces token usage by 30-65% for structured data through transparent TOON format conversion.">
 
-    <!-- Google Fonts: Fira Code + Fira Sans -->
+    <!-- Google Fonts: JetBrains Mono + IBM Plex Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
-                        'mono': ['Fira Code', 'monospace'],
-                        'sans': ['Fira Sans', 'sans-serif']
+                        'sans': ['IBM Plex Sans', 'system-ui', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'Monaco', 'Menlo', 'monospace']
                     },
                     colors: {
-                        'data-blue': '#3B82F6',
-                        'data-blue-light': '#60A5FA',
-                        'action-orange': '#F97316',
-                        'brutalist-red': '#FF0000',
-                        'brutalist-yellow': '#FFFF00',
-                        'brutalist-black': '#000000',
+                        'trust-blue': '#2563EB',
+                        'trust-blue-dark': '#1E40AF',
+                        'cta-orange': '#F97316',
+                        'cta-orange-dark': '#EA580C',
                     }
                 }
             }
         }
     </script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* Dark Mode Variables */
+        :root {
+            --bg-primary: #F8FAFC;
+            --bg-secondary: #FFFFFF;
+            --bg-tertiary: #F1F5F9;
+            --text-primary: #1E293B;
+            --text-secondary: #475569;
+            --text-tertiary: #64748B;
+            --border-color: #E2E8F0;
+            --code-bg: #1E293B;
+        }
+
+        .dark {
+            --bg-primary: #0F172A;
+            --bg-secondary: #1E293B;
+            --bg-tertiary: #334155;
+            --text-primary: #F8FAFC;
+            --text-secondary: #CBD5E1;
+            --text-tertiary: #94A3B8;
+            --border-color: #334155;
+            --code-bg: #0F172A;
         }
 
         body {
-            font-family: 'Fira Sans', sans-serif;
-            background: #F8FAFC;
-            color: #1E293B;
-            line-height: 1.6;
+            font-family: 'IBM Plex Sans', system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 300ms ease, color 300ms ease;
         }
 
-        /* Brutalist Typography */
-        h1, h2, h3, h4, .metric-value, .code-block {
-            font-family: 'Fira Code', monospace;
-            font-weight: 700;
+        /* Typography */
+        .heading-mono {
+            font-family: 'JetBrains Mono', Monaco, Menlo, monospace;
         }
 
-        /* Brutalist Grid Container */
-        .brutalist-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 1rem;
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        /* High Contrast Borders */
-        .brutalist-border {
-            border: 3px solid #000000;
+        .dark .gradient-text {
+            background: linear-gradient(135deg, #60A5FA 0%, #93C5FD 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .brutalist-border-thin {
-            border: 2px solid #1E293B;
-        }
-
-        /* Flat Buttons - No shadows, stark borders */
-        .btn-brutalist {
-            font-family: 'Fira Code', monospace;
-            font-weight: 700;
-            padding: 1rem 2rem;
-            border: 3px solid #000000;
-            background: #F97316;
-            color: #FFFFFF;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 100ms ease;
-            display: inline-block;
-            text-decoration: none;
-        }
-
-        .btn-brutalist:hover {
-            background: #000000;
-            color: #FFFF00;
-            transform: translate(-2px, -2px);
-            box-shadow: 4px 4px 0 #F97316;
-        }
-
-        .btn-brutalist-secondary {
-            background: #FFFFFF;
-            color: #000000;
-            border: 3px solid #3B82F6;
-        }
-
-        .btn-brutalist-secondary:hover {
-            background: #3B82F6;
-            color: #FFFFFF;
-            box-shadow: 4px 4px 0 #000000;
-        }
-
-        /* Data Metrics Cards */
-        .metric-card {
-            background: #FFFFFF;
-            border: 3px solid #000000;
-            padding: 1.5rem;
-            position: relative;
-        }
-
-        .metric-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: #3B82F6;
-        }
-
-        .metric-card.accent-red::before {
-            background: #FF0000;
-        }
-
-        .metric-card.accent-yellow::before {
-            background: #FFFF00;
-        }
-
-        .metric-card.accent-orange::before {
-            background: #F97316;
-        }
-
-        .metric-value {
-            font-size: 3rem;
-            line-height: 1;
-            color: #3B82F6;
-            margin-bottom: 0.5rem;
-        }
-
-        .metric-label {
-            font-size: 0.875rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #64748B;
-            font-weight: 600;
-        }
-
-        /* Data Dashboard Grid */
-        .dashboard-grid {
+        /* Bento Box Grid - Featured Cards */
+        .bento-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 1rem;
         }
 
-        /* Code Blocks - Raw Terminal Style */
-        .code-block {
-            background: #000000;
-            color: #00FF00;
+        @media (min-width: 768px) {
+            .bento-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .bento-large {
+                grid-column: span 2;
+            }
+            .bento-tall {
+                grid-row: span 2;
+            }
+        }
+
+        /* Feature Cards with Soft UI */
+        .feature-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
             padding: 1.5rem;
-            border: 3px solid #000000;
-            font-size: 0.875rem;
-            line-height: 1.5;
-            overflow-x: auto;
+            transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
+            overflow: hidden;
         }
 
-        .code-block::before {
-            content: '> TERMINAL';
-            position: absolute;
-            top: 0;
-            left: 0;
-            background: #FF0000;
-            color: #FFFFFF;
-            padding: 0.25rem 0.75rem;
-            font-size: 0.75rem;
-            font-weight: 700;
-        }
-
-        .code-content {
-            margin-top: 1.5rem;
-        }
-
-        /* Navigation - Brutalist Style */
-        nav {
-            background: #FFFFFF;
-            border-bottom: 3px solid #000000;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .nav-link {
-            font-family: 'Fira Code', monospace;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.875rem;
-            color: #1E293B;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border: 2px solid transparent;
-            transition: all 100ms ease;
-        }
-
-        .nav-link:hover {
-            border: 2px solid #3B82F6;
-            background: #3B82F6;
-            color: #FFFFFF;
-        }
-
-        /* Language Switcher */
-        .lang-switcher {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            z-index: 200;
-            background: #FFFFFF;
-            border: 3px solid #000000;
-            padding: 0.5rem 1rem;
-            font-family: 'Fira Code', monospace;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 100ms ease;
-        }
-
-        .lang-switcher:hover {
-            background: #FFFF00;
-            transform: translate(-2px, -2px);
-            box-shadow: 4px 4px 0 #000000;
-        }
-
-        /* Hero Section */
-        .hero-title {
-            font-size: clamp(2rem, 8vw, 5rem);
-            line-height: 1.1;
-            margin-bottom: 1rem;
-        }
-
-        .hero-subtitle {
-            font-size: clamp(1rem, 3vw, 1.5rem);
-            color: #64748B;
-            margin-bottom: 2rem;
-        }
-
-        /* Data Visualization Bars */
-        .data-bar {
-            height: 8px;
-            background: #E2E8F0;
-            position: relative;
-            margin-top: 0.5rem;
-        }
-
-        .data-bar-fill {
-            height: 100%;
-            background: #3B82F6;
-            position: absolute;
-            left: 0;
-            top: 0;
-        }
-
-        /* Badge */
-        .badge-brutalist {
-            font-family: 'Fira Code', monospace;
-            font-size: 0.75rem;
-            font-weight: 700;
-            background: #000000;
-            color: #FFFF00;
-            padding: 0.25rem 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: inline-block;
-        }
-
-        /* Comparison Table */
-        .comparison-table {
-            width: 100%;
-            border: 3px solid #000000;
-            border-collapse: collapse;
-        }
-
-        .comparison-table th,
-        .comparison-table td {
-            border: 2px solid #000000;
-            padding: 1rem;
-            text-align: left;
-            font-family: 'Fira Code', monospace;
-        }
-
-        .comparison-table th {
-            background: #000000;
-            color: #FFFFFF;
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 0.875rem;
-        }
-
-        .comparison-table tr:nth-child(even) {
-            background: #F8FAFC;
-        }
-
-        .comparison-table tr:hover {
-            background: #FFFF00;
-        }
-
-        /* Footer */
-        footer {
-            background: #000000;
-            color: #FFFFFF;
-            border-top: 3px solid #000000;
-        }
-
-        footer a {
-            color: #60A5FA;
-            text-decoration: none;
-            border-bottom: 2px solid transparent;
-        }
-
-        footer a:hover {
-            border-bottom: 2px solid #60A5FA;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .brutalist-border {
-                border-width: 2px;
-            }
-
-            .btn-brutalist {
-                padding: 0.75rem 1.5rem;
-            }
-
-            .metric-value {
-                font-size: 2rem;
-            }
-
-            .hero-title {
-                margin-bottom: 1rem;
-            }
-        }
-
-        /* Section Spacing */
-        section {
-            padding: 4rem 0;
-        }
-
-        .section-title {
-            font-size: clamp(2rem, 5vw, 3rem);
-            margin-bottom: 3rem;
-            text-align: center;
-            position: relative;
-            display: inline-block;
-        }
-
-        .section-title::after {
+        .feature-card::before {
             content: '';
             position: absolute;
-            bottom: -0.5rem;
+            top: 0;
             left: 0;
             width: 100%;
-            height: 4px;
-            background: #3B82F6;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.03) 0%, rgba(59, 130, 246, 0.03) 100%);
+            opacity: 0;
+            transition: opacity 250ms ease;
         }
 
-        /* Step Cards */
-        .step-card {
-            background: #FFFFFF;
-            border: 3px solid #000000;
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px -8px rgba(37, 99, 235, 0.12);
+            border-color: #2563EB;
+        }
+
+        .dark .feature-card:hover {
+            box-shadow: 0 12px 24px -8px rgba(96, 165, 250, 0.2);
+            border-color: #3B82F6;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
             padding: 1.5rem;
+            overflow-x: auto;
             position: relative;
-            margin-bottom: 1rem;
+            font-family: 'JetBrains Mono', Monaco, Menlo, monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
         }
 
-        .step-number {
-            position: absolute;
-            top: -1rem;
-            left: 1rem;
+        .code-block code {
+            color: #E2E8F0;
+        }
+
+        .dark .code-block {
+            background: #0A0F1E;
+            border-color: #1E293B;
+        }
+
+        /* Syntax Highlighting */
+        .keyword { color: #C792EA; }
+        .string { color: #A5D6FF; }
+        .number { color: #F78C6C; }
+        .comment { color: #6A737D; }
+        .property { color: #82AAFF; }
+        .punctuation { color: #89DDFF; }
+
+        /* CTA Buttons */
+        .btn-primary {
             background: #F97316;
-            color: #FFFFFF;
-            width: 3rem;
-            height: 3rem;
-            border: 3px solid #000000;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 200ms ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background: #EA580C;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 16px -4px rgba(249, 115, 22, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #2563EB;
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 200ms ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #2563EB;
+            cursor: pointer;
+        }
+
+        .dark .btn-secondary {
+            color: #60A5FA;
+            border-color: #60A5FA;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .dark .btn-secondary:hover {
+            background: rgba(96, 165, 250, 0.1);
+        }
+
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 3.5rem;
+            height: 3.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Fira Code', monospace;
-            font-weight: 700;
-            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 200ms ease;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
-        .step-content {
-            margin-top: 1rem;
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
 
-        /* CTA Section */
-        .cta-section {
-            background: #3B82F6;
-            border-top: 3px solid #000000;
-            border-bottom: 3px solid #000000;
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+            color: white;
+        }
+
+        /* Stats Counter Animation */
+        @keyframes countUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stat-item {
+            animation: countUp 0.6s ease-out forwards;
+        }
+
+        /* Navigation Shadow on Scroll */
+        .nav-scrolled {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark .nav-scrolled {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Loading State for Code Examples */
+        .code-loading {
             position: relative;
         }
 
-        .cta-section::before {
+        .code-loading::after {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: repeating-linear-gradient(
-                45deg,
-                transparent,
-                transparent 10px,
-                rgba(0,0,0,0.05) 10px,
-                rgba(0,0,0,0.05) 20px
-            );
-            pointer-events: none;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shimmer 1.5s infinite;
         }
 
-        /* Hidden Language Content */
-        [data-lang]:not([data-lang="en"]) {
-            display: none;
-        }
-
-        html[lang="zh-TW"] [data-lang="en"] {
-            display: none;
-        }
-
-        html[lang="zh-TW"] [data-lang="zh-TW"] {
-            display: block;
-        }
-
-        html[lang="zh-TW"] [data-lang="zh-TW"].inline {
-            display: inline;
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
     </style>
 </head>
 <body>
-
-    <!-- Language Switcher -->
-    <button class="lang-switcher" id="langSwitch" aria-label="Switch language">
-        <span data-lang="en">EN → 中文</span>
-        <span data-lang="zh-TW" class="inline">中文 → EN</span>
+    <!-- Dark Mode Toggle -->
+    <button class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode">
+        <svg class="sun-icon" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg class="moon-icon hidden" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
     </button>
 
     <!-- Navigation -->
-    <nav>
-        <div class="brutalist-container">
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0;">
-                <div style="display: flex; align-items: center; gap: 1rem;">
-                    <h1 style="font-size: 1.5rem; font-family: 'Fira Code', monospace; font-weight: 700;">TOONIFY_MCP</h1>
-                    <span class="badge-brutalist">OPEN SOURCE</span>
+    <nav id="mainNav" style="background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 50; transition: box-shadow 200ms ease;">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="text-2xl font-bold heading-mono gradient-text">Toonify MCP</div>
+                    <span class="badge">Open Source</span>
                 </div>
-                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                    <a href="#features" class="nav-link" data-lang="en">FEATURES</a>
-                    <a href="#features" class="nav-link" data-lang="zh-TW">功能特色</a>
-
-                    <a href="#performance" class="nav-link" data-lang="en">PERFORMANCE</a>
-                    <a href="#performance" class="nav-link" data-lang="zh-TW">效能數據</a>
-
-                    <a href="#install" class="nav-link" data-lang="en">INSTALL</a>
-                    <a href="#install" class="nav-link" data-lang="zh-TW">安裝</a>
-
-                    <a href="https://github.com/PCIRCLE-AI/toonify-mcp" class="nav-link" target="_blank">GITHUB</a>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#features" style="color: var(--text-secondary);" class="hover:text-blue-600 dark:hover:text-blue-400 font-medium transition">Features</a>
+                    <a href="#how-it-works" style="color: var(--text-secondary);" class="hover:text-blue-600 dark:hover:text-blue-400 font-medium transition">How It Works</a>
+                    <a href="#installation" style="color: var(--text-secondary);" class="hover:text-blue-600 dark:hover:text-blue-400 font-medium transition">Installation</a>
+                    <a href="#examples" style="color: var(--text-secondary);" class="hover:text-blue-600 dark:hover:text-blue-400 font-medium transition">Examples</a>
+                    <a href="https://github.com/PCIRCLE-AI/toonify-mcp" style="color: var(--text-secondary);" class="hover:text-blue-600 dark:hover:text-blue-400 font-medium transition" target="_blank">GitHub</a>
                 </div>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section style="background: #F8FAFC; text-align: center;">
-        <div class="brutalist-container">
-            <h1 class="hero-title" data-lang="en">
-                TOKEN OPTIMIZATION.<br>
-                DATA FIRST.
+    <section class="py-20" style="background: var(--bg-primary);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-5xl md:text-6xl font-bold heading-mono mb-6" style="color: var(--text-primary);">
+                Free & Open Source<br>
+                <span class="gradient-text">Token Optimization for Claude Code</span>
             </h1>
-            <h1 class="hero-title" data-lang="zh-TW">
-                TOKEN 優化。<br>
-                數據至上。
-            </h1>
-
-            <p class="hero-subtitle" data-lang="en">
-                MCP server + Claude Code Plugin providing automatic token optimization for structured data.<br>
-                Reduces Claude API token usage by <strong>30-65%</strong> (typically <strong>50-55%</strong>) through transparent TOON format conversion.
-            </p>
-            <p class="hero-subtitle" data-lang="zh-TW">
-                MCP 伺服器 + Claude Code 外掛，提供結構化資料的自動 token 優化。<br>
-                透過透明的 TOON 格式轉換，將 Claude API token 使用量減少 <strong>30-65%</strong>（通常為 <strong>50-55%</strong>）。
-            </p>
-
-            <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 3rem; flex-wrap: wrap;">
-                <a href="https://github.com/PCIRCLE-AI/toonify-mcp" class="btn-brutalist" data-lang="en">
-                    ★ INSTALL NOW
-                </a>
-                <a href="https://github.com/PCIRCLE-AI/toonify-mcp" class="btn-brutalist" data-lang="zh-TW">
-                    ★ 立即安裝
-                </a>
-
-                <a href="https://github.com/PCIRCLE-AI/toonify-mcp" class="btn-brutalist-secondary" target="_blank" data-lang="en">
-                    VIEW ON GITHUB →
-                </a>
-                <a href="https://github.com/PCIRCLE-AI/toonify-mcp" class="btn-brutalist-secondary" target="_blank" data-lang="zh-TW">
-                    查看 GITHUB →
-                </a>
-            </div>
 
             <!-- GitHub Badges -->
-            <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 0.5rem;">
-                <img src="https://img.shields.io/github/stars/PCIRCLE-AI/toonify-mcp?style=flat-square&logo=github" alt="GitHub stars">
-                <img src="https://img.shields.io/github/license/PCIRCLE-AI/toonify-mcp?style=flat-square" alt="License">
-                <img src="https://img.shields.io/badge/version-0.4.0-blue?style=flat-square" alt="Version">
-                <img src="https://img.shields.io/npm/dm/toonify-mcp?style=flat-square&logo=npm" alt="npm downloads">
+            <div class="flex justify-center flex-wrap gap-3 mb-6">
+                <img src="https://img.shields.io/github/stars/PCIRCLE-AI/toonify-mcp?style=social" alt="GitHub stars">
+                <img src="https://img.shields.io/github/forks/PCIRCLE-AI/toonify-mcp?style=social" alt="GitHub forks">
+                <img src="https://img.shields.io/github/license/PCIRCLE-AI/toonify-mcp" alt="License">
+                <img src="https://img.shields.io/badge/version-0.4.0-blue" alt="Version">
+                <img src="https://img.shields.io/npm/dm/toonify-mcp" alt="npm downloads">
+            </div>
+
+            <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto" style="color: var(--text-secondary);">
+                Automatically reduce Claude API token usage by <strong style="color: var(--text-primary);">30-65%</strong> (typically 50-55%) for JSON, CSV, and YAML data through transparent TOON format conversion.
+            </p>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
+                <a href="https://github.com/PCIRCLE-AI/toonify-mcp" class="btn-primary">
+                    ⭐ Star on GitHub
+                </a>
+                <a href="https://github.com/PCIRCLE-AI/toonify-mcp" class="btn-secondary" target="_blank">
+                    View on GitHub →
+                </a>
+            </div>
+
+            <div class="text-sm" style="color: var(--text-tertiary);">
+                MIT Licensed • Free Forever • Community Driven
             </div>
         </div>
     </section>
 
-    <!-- Performance Dashboard -->
-    <section id="performance" style="background: #FFFFFF; border-top: 3px solid #000000; border-bottom: 3px solid #000000;">
-        <div class="brutalist-container">
-            <div style="text-align: center; margin-bottom: 3rem;">
-                <h2 class="section-title" data-lang="en">PERFORMANCE METRICS</h2>
-                <h2 class="section-title" data-lang="zh-TW">效能指標</h2>
-            </div>
-
-            <div class="dashboard-grid">
-                <!-- Metric 1 -->
-                <div class="metric-card accent-orange">
-                    <div class="metric-value">30-65<span style="font-size: 1.5rem;">%</span></div>
-                    <div class="metric-label" data-lang="en">TOKEN REDUCTION</div>
-                    <div class="metric-label" data-lang="zh-TW">TOKEN 減少率</div>
-                    <p style="font-size: 0.875rem; color: #64748B; margin-top: 0.5rem;" data-lang="en">Typically 50-55%</p>
-                    <p style="font-size: 0.875rem; color: #64748B; margin-top: 0.5rem;" data-lang="zh-TW">通常為 50-55%</p>
-                    <div class="data-bar">
-                        <div class="data-bar-fill" style="width: 55%;"></div>
-                    </div>
+    <!-- Quick Stats -->
+    <section class="py-12" style="background: var(--bg-secondary); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+                <div class="stat-item">
+                    <div class="text-4xl font-bold heading-mono gradient-text mb-2">30-65%</div>
+                    <div style="color: var(--text-secondary);">Token Reduction</div>
                 </div>
-
-                <!-- Metric 2 -->
-                <div class="metric-card accent-red">
-                    <div class="metric-value">50-500<span style="font-size: 1.5rem;">×</span></div>
-                    <div class="metric-label" data-lang="en">CACHE PERFORMANCE</div>
-                    <div class="metric-label" data-lang="zh-TW">快取效能提升</div>
-                    <div class="data-bar">
-                        <div class="data-bar-fill" style="width: 95%; background: #FF0000;"></div>
-                    </div>
+                <div class="stat-item" style="animation-delay: 0.1s;">
+                    <div class="text-4xl font-bold heading-mono gradient-text mb-2">50-500x</div>
+                    <div style="color: var(--text-secondary);">Cache Performance</div>
                 </div>
-
-                <!-- Metric 3 -->
-                <div class="metric-card accent-yellow">
-                    <div class="metric-value">0.1<span style="font-size: 1.5rem;">ms</span></div>
-                    <div class="metric-label" data-lang="en">CACHE HIT TIME</div>
-                    <div class="metric-label" data-lang="zh-TW">快取命中時間</div>
-                    <div class="data-bar">
-                        <div class="data-bar-fill" style="width: 2%; background: #FFFF00; border: 1px solid #000;"></div>
-                    </div>
+                <div class="stat-item" style="animation-delay: 0.2s;">
+                    <div class="text-4xl font-bold heading-mono gradient-text mb-2">15+</div>
+                    <div style="color: var(--text-secondary);">Languages Supported</div>
                 </div>
-
-                <!-- Metric 4 -->
-                <div class="metric-card">
-                    <div class="metric-value">15<span style="font-size: 1.5rem;">+</span></div>
-                    <div class="metric-label" data-lang="en">LANGUAGES SUPPORTED</div>
-                    <div class="metric-label" data-lang="zh-TW">支援語言數量</div>
-                    <div class="data-bar">
-                        <div class="data-bar-fill" style="width: 75%;"></div>
-                    </div>
+                <div class="stat-item" style="animation-delay: 0.3s;">
+                    <div class="text-4xl font-bold heading-mono gradient-text mb-2">100%</div>
+                    <div style="color: var(--text-secondary);">Automatic</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section id="features" style="background: #F8FAFC;">
-        <div class="brutalist-container">
-            <div style="text-align: center; margin-bottom: 3rem;">
-                <h2 class="section-title" data-lang="en">KEY FEATURES</h2>
-                <h2 class="section-title" data-lang="zh-TW">核心功能</h2>
+    <!-- Features Section - Bento Box Grid -->
+    <section id="features" class="py-16" style="background: var(--bg-primary);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold heading-mono mb-4" style="color: var(--text-primary);">Key Features</h2>
+                <p class="text-xl" style="color: var(--text-secondary);">Built for developers who care about efficiency</p>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
-                <!-- Feature 1 -->
-                <div class="metric-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">⚡</div>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;" data-lang="en">
-                        AUTOMATIC OPTIMIZATION
-                    </h3>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;" data-lang="zh-TW">
-                        自動優化
-                    </h3>
-                    <p style="color: #64748B; line-height: 1.6;" data-lang="en">
-                        PostToolUse hook intercepts tool results and applies TOON format conversion transparently. Zero manual intervention.
+            <div class="bento-grid">
+                <div class="feature-card bento-large">
+                    <div class="text-3xl mb-4">🎯</div>
+                    <h3 class="text-xl font-bold mb-3 heading-mono" style="color: var(--text-primary);">Automatic Optimization</h3>
+                    <p style="color: var(--text-secondary);">
+                        PostToolUse hook intercepts tool results and applies TOON format conversion transparently. No manual calls needed.
                     </p>
-                    <p style="color: #64748B; line-height: 1.6;" data-lang="zh-TW">
-                        PostToolUse hook 攔截工具結果並自動套用 TOON 格式轉換。完全無需手動操作。
+                    <div class="mt-4 p-3 rounded-lg" style="background: var(--bg-tertiary);">
+                        <code class="text-sm font-mono" style="color: var(--text-secondary);">
+                            claude plugin add toonify-mcp
+                        </code>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="text-3xl mb-4">⚡</div>
+                    <h3 class="text-xl font-bold mb-3 heading-mono" style="color: var(--text-primary);">Enhanced Caching</h3>
+                    <p style="color: var(--text-secondary);">
+                        LRU cache with TTL expiration achieves 50-500x performance improvement on cache hits (~0.1ms vs 5-50ms).
                     </p>
                 </div>
 
-                <!-- Feature 2 -->
-                <div class="metric-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🚀</div>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;" data-lang="en">
-                        ENHANCED CACHING
-                    </h3>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;" data-lang="zh-TW">
-                        增強快取系統
-                    </h3>
-                    <p style="color: #64748B; line-height: 1.6;" data-lang="en">
-                        LRU cache with TTL expiration achieves 50-500× performance improvement on cache hits (~0.1ms vs 5-50ms).
-                    </p>
-                    <p style="color: #64748B; line-height: 1.6;" data-lang="zh-TW">
-                        LRU 快取搭配 TTL 過期機制，快取命中時效能提升 50-500 倍（~0.1ms vs 5-50ms）。
+                <div class="feature-card">
+                    <div class="text-3xl mb-4">🌍</div>
+                    <h3 class="text-xl font-bold mb-3 heading-mono" style="color: var(--text-primary);">Multilingual Support</h3>
+                    <p style="color: var(--text-secondary);">
+                        Accurate token counting for 15+ languages with language-aware multipliers (2x Chinese, 2.5x Japanese, 3x Arabic).
                     </p>
                 </div>
 
-                <!-- Feature 3 -->
-                <div class="metric-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🌍</div>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;" data-lang="en">
-                        MULTILINGUAL SUPPORT
-                    </h3>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;" data-lang="zh-TW">
-                        多語言支援
-                    </h3>
-                    <p style="color: #64748B; line-height: 1.6;" data-lang="en">
-                        Accurate token counting for 15+ languages with language-aware multipliers (2× Chinese, 2.5× Japanese, 3× Arabic).
-                    </p>
-                    <p style="color: #64748B; line-height: 1.6;" data-lang="zh-TW">
-                        精確的 15+ 語言 token 計數，具備語言感知乘數（2× 中文、2.5× 日文、3× 阿拉伯文）。
-                    </p>
-                </div>
-
-                <!-- Feature 4 -->
-                <div class="metric-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🔧</div>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;" data-lang="en">
-                        ZERO CONFIGURATION
-                    </h3>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;" data-lang="zh-TW">
-                        零設定
-                    </h3>
-                    <p style="color: #64748B; line-height: 1.6;" data-lang="en">
+                <div class="feature-card">
+                    <div class="text-3xl mb-4">🔧</div>
+                    <h3 class="text-xl font-bold mb-3 heading-mono" style="color: var(--text-primary);">Zero Configuration</h3>
+                    <p style="color: var(--text-secondary);">
                         Works out of the box with sensible defaults. Optional configuration file for advanced customization.
                     </p>
-                    <p style="color: #64748B; line-height: 1.6;" data-lang="zh-TW">
-                        開箱即用，預設配置合理。可選配置檔案提供進階客製化。
-                    </p>
                 </div>
 
-                <!-- Feature 5 -->
-                <div class="metric-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🔄</div>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;" data-lang="en">
-                        DUAL MODE
-                    </h3>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;" data-lang="zh-TW">
-                        雙模式運作
-                    </h3>
-                    <p style="color: #64748B; line-height: 1.6;" data-lang="en">
+                <div class="feature-card">
+                    <div class="text-3xl mb-4">🔄</div>
+                    <h3 class="text-xl font-bold mb-3 heading-mono" style="color: var(--text-primary);">Dual Mode</h3>
+                    <p style="color: var(--text-secondary);">
                         Works as Plugin (automatic) or MCP Server (manual). Choose the mode that fits your workflow.
                     </p>
-                    <p style="color: #64748B; line-height: 1.6;" data-lang="zh-TW">
-                        支援 Plugin 模式（自動）或 MCP Server 模式（手動）。選擇適合你工作流程的模式。
-                    </p>
                 </div>
 
-                <!-- Feature 6 -->
-                <div class="metric-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;" data-lang="en">
-                        BUILT-IN METRICS
-                    </h3>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 1rem; font-size: 1.25rem;" data-lang="zh-TW">
-                        內建數據追蹤
-                    </h3>
-                    <p style="color: #64748B; line-height: 1.6;" data-lang="en">
+                <div class="feature-card">
+                    <div class="text-3xl mb-4">📊</div>
+                    <h3 class="text-xl font-bold mb-3 heading-mono" style="color: var(--text-primary);">Built-in Metrics</h3>
+                    <p style="color: var(--text-secondary);">
                         Track token savings locally with comprehensive statistics. Monitor cache hit rates and performance.
-                    </p>
-                    <p style="color: #64748B; line-height: 1.6;" data-lang="zh-TW">
-                        本地追蹤 token 節省量，提供完整統計數據。監控快取命中率與效能表現。
                     </p>
                 </div>
             </div>
@@ -684,71 +463,45 @@
     </section>
 
     <!-- How It Works -->
-    <section style="background: #FFFFFF; border-top: 3px solid #000000; border-bottom: 3px solid #000000;">
-        <div class="brutalist-container">
-            <div style="text-align: center; margin-bottom: 3rem;">
-                <h2 class="section-title" data-lang="en">TECHNICAL WORKFLOW</h2>
-                <h2 class="section-title" data-lang="zh-TW">技術流程</h2>
+    <section id="how-it-works" class="py-16" style="background: var(--bg-secondary);">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold heading-mono mb-4" style="color: var(--text-primary);">How It Works</h2>
+                <p class="text-xl" style="color: var(--text-secondary);">Transparent optimization in Plugin mode</p>
             </div>
 
-            <div style="max-width: 800px; margin: 0 auto;">
-                <!-- Step 1 -->
-                <div class="step-card">
-                    <div class="step-number">01</div>
-                    <div class="step-content">
-                        <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 0.5rem;" data-lang="en">
-                            USER READS LARGE JSON FILE
-                        </h3>
-                        <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 0.5rem;" data-lang="zh-TW">
-                            使用者讀取大型 JSON 檔案
-                        </h3>
-                        <p style="color: #64748B;" data-lang="en">Claude Code calls Read tool to fetch file contents</p>
-                        <p style="color: #64748B;" data-lang="zh-TW">Claude Code 呼叫 Read 工具獲取檔案內容</p>
+            <div class="feature-card p-8">
+                <div class="space-y-6">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold mr-4">1</div>
+                        <div>
+                            <h3 class="font-bold mb-1" style="color: var(--text-primary);">User reads large JSON file</h3>
+                            <p style="color: var(--text-secondary);">Claude Code calls Read tool to fetch file contents</p>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Step 2 -->
-                <div class="step-card">
-                    <div class="step-number">02</div>
-                    <div class="step-content">
-                        <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 0.5rem;" data-lang="en">
-                            POSTTOOLUSE HOOK INTERCEPTS
-                        </h3>
-                        <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 0.5rem;" data-lang="zh-TW">
-                            POSTTOOLUSE HOOK 攔截結果
-                        </h3>
-                        <p style="color: #64748B;" data-lang="en">Hook automatically checks if content should be optimized</p>
-                        <p style="color: #64748B;" data-lang="zh-TW">Hook 自動檢查內容是否應該優化</p>
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold mr-4">2</div>
+                        <div>
+                            <h3 class="font-bold mb-1" style="color: var(--text-primary);">PostToolUse hook intercepts result</h3>
+                            <p style="color: var(--text-secondary);">Hook automatically checks if content should be optimized</p>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Step 3 -->
-                <div class="step-card">
-                    <div class="step-number">03</div>
-                    <div class="step-content">
-                        <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 0.5rem;" data-lang="en">
-                            TOON FORMAT CONVERSION
-                        </h3>
-                        <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 0.5rem;" data-lang="zh-TW">
-                            TOON 格式轉換
-                        </h3>
-                        <p style="color: #64748B;" data-lang="en">JSON/CSV/YAML converted to compact TOON representation</p>
-                        <p style="color: #64748B;" data-lang="zh-TW">JSON/CSV/YAML 轉換為緊湊的 TOON 表示格式</p>
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold mr-4">3</div>
+                        <div>
+                            <h3 class="font-bold mb-1" style="color: var(--text-primary);">TOON format conversion</h3>
+                            <p style="color: var(--text-secondary);">JSON/CSV/YAML converted to compact TOON representation</p>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Step 4 -->
-                <div class="step-card">
-                    <div class="step-number">04</div>
-                    <div class="step-content">
-                        <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 0.5rem;" data-lang="en">
-                            OPTIMIZED CONTENT SENT TO API
-                        </h3>
-                        <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; margin-bottom: 0.5rem;" data-lang="zh-TW">
-                            優化內容傳送至 API
-                        </h3>
-                        <p style="color: #64748B;" data-lang="en">40-60% typical token reduction achieved ✨</p>
-                        <p style="color: #64748B;" data-lang="zh-TW">實現典型 40-60% token 減少量 ✨</p>
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold mr-4">4</div>
+                        <div>
+                            <h3 class="font-bold mb-1" style="color: var(--text-primary);">Optimized content sent to Claude API</h3>
+                            <p style="color: var(--text-secondary);">50-55% typical token reduction achieved ✨</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -756,272 +509,200 @@
     </section>
 
     <!-- Installation -->
-    <section id="install" style="background: #F8FAFC;">
-        <div class="brutalist-container">
-            <div style="text-align: center; margin-bottom: 3rem;">
-                <h2 class="section-title" data-lang="en">INSTALLATION</h2>
-                <h2 class="section-title" data-lang="zh-TW">安裝步驟</h2>
+    <section id="installation" class="py-16" style="background: var(--bg-primary);">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold heading-mono mb-4" style="color: var(--text-primary);">Installation</h2>
+                <p class="text-xl" style="color: var(--text-secondary);">Get started in minutes</p>
             </div>
 
-            <div style="max-width: 900px; margin: 0 auto;">
+            <div class="space-y-8">
                 <!-- Option A -->
-                <div style="margin-bottom: 2rem;">
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; font-size: 1.5rem; margin-bottom: 1rem;" data-lang="en">
-                        OPTION A: NPM INSTALL
-                    </h3>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; font-size: 1.5rem; margin-bottom: 1rem;" data-lang="zh-TW">
-                        選項 A：NPM 安裝
+                <div class="feature-card p-8">
+                    <h3 class="text-2xl font-bold heading-mono mb-4" style="color: var(--text-primary);">
+                        <span class="gradient-text">Option A:</span> Install from npm
                     </h3>
                     <div class="code-block">
-                        <div class="code-content">
-<span style="color: #666;"># Install globally</span>
+                        <code><span class="comment"># Install globally</span>
 npm install -g toonify-mcp
 
-<span style="color: #666;"># Add as plugin (automatic mode)</span>
+<span class="comment"># Add as plugin (automatic mode)</span>
 claude plugin add toonify-mcp
 
-<span style="color: #666;"># Verify installation</span>
+<span class="comment"># Verify installation</span>
 claude plugin list
-<span style="color: #666;"># Should show: toonify-mcp ✓</span>
-                        </div>
+<span class="comment"># Should show: toonify-mcp ✓</span></code>
                     </div>
+                    <p class="mt-4" style="color: var(--text-secondary);">
+                        <strong style="color: var(--text-primary);">That's it!</strong> The PostToolUse hook will now automatically intercept and optimize structured data from Read, Grep, and other file tools.
+                    </p>
                 </div>
 
                 <!-- Option B -->
-                <div>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; font-size: 1.5rem; margin-bottom: 1rem;" data-lang="en">
-                        OPTION B: MCP SERVER MODE
-                    </h3>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; font-size: 1.5rem; margin-bottom: 1rem;" data-lang="zh-TW">
-                        選項 B：MCP SERVER 模式
+                <div class="feature-card p-8">
+                    <h3 class="text-2xl font-bold heading-mono mb-4" style="color: var(--text-primary);">
+                        <span class="gradient-text">Option B:</span> MCP Server Mode
                     </h3>
                     <div class="code-block">
-                        <div class="code-content">
-<span style="color: #666;"># Install globally</span>
+                        <code><span class="comment"># Install globally</span>
 npm install -g toonify-mcp
 
-<span style="color: #666;"># Register as MCP server</span>
+<span class="comment"># Register as MCP server</span>
 claude mcp add toonify -- toonify-mcp
 
-<span style="color: #666;"># Verify</span>
+<span class="comment"># Verify</span>
 claude mcp list
-<span style="color: #666;"># Should show: toonify: toonify-mcp - ✓ Connected</span>
-                        </div>
+<span class="comment"># Should show: toonify: toonify-mcp - ✓ Connected</span></code>
                     </div>
+                    <p class="mt-4" style="color: var(--text-secondary);">
+                        For explicit control or non-Claude Code MCP clients. Call tools manually when needed.
+                    </p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Before/After Comparison -->
-    <section style="background: #FFFFFF; border-top: 3px solid #000000; border-bottom: 3px solid #000000;">
-        <div class="brutalist-container">
-            <div style="text-align: center; margin-bottom: 3rem;">
-                <h2 class="section-title" data-lang="en">DATA COMPARISON</h2>
-                <h2 class="section-title" data-lang="zh-TW">數據對比</h2>
+    <!-- Examples -->
+    <section id="examples" class="py-16" style="background: var(--bg-secondary);">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold heading-mono mb-4" style="color: var(--text-primary);">Examples</h2>
+                <p class="text-xl" style="color: var(--text-secondary);">See the token reduction in action</p>
             </div>
 
-            <div style="max-width: 1000px; margin: 0 auto;">
-                <table class="comparison-table">
-                    <thead>
-                        <tr>
-                            <th data-lang="en">METRIC</th>
-                            <th data-lang="zh-TW">指標</th>
-
-                            <th data-lang="en">BEFORE</th>
-                            <th data-lang="zh-TW">優化前</th>
-
-                            <th data-lang="en">AFTER</th>
-                            <th data-lang="zh-TW">優化後</th>
-
-                            <th data-lang="en">REDUCTION</th>
-                            <th data-lang="zh-TW">減少率</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td data-lang="en">Tokens</td>
-                            <td data-lang="zh-TW">Token 數量</td>
-                            <td>142</td>
-                            <td>57</td>
-                            <td style="color: #F97316; font-weight: 700;">-60%</td>
-                        </tr>
-                        <tr>
-                            <td data-lang="en">Cache Hit Time</td>
-                            <td data-lang="zh-TW">快取命中時間</td>
-                            <td>5-50ms</td>
-                            <td style="color: #3B82F6; font-weight: 700;">~0.1ms</td>
-                            <td style="color: #F97316; font-weight: 700;">50-500×</td>
-                        </tr>
-                        <tr>
-                            <td data-lang="en">Processing Time</td>
-                            <td data-lang="zh-TW">處理時間</td>
-                            <td>Standard</td>
-                            <td style="color: #3B82F6; font-weight: 700;">Optimized</td>
-                            <td style="color: #F97316; font-weight: 700;">Faster</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <div style="margin-top: 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <!-- Before -->
-                    <div>
-                        <div style="background: #000; color: #FF0000; padding: 0.5rem; font-family: 'Fira Code', monospace; font-weight: 700; text-align: center; border: 3px solid #000;" data-lang="en">
-                            BEFORE (142 TOKENS)
-                        </div>
-                        <div style="background: #000; color: #FF0000; padding: 0.5rem; font-family: 'Fira Code', monospace; font-weight: 700; text-align: center; border: 3px solid #000;" data-lang="zh-TW">
-                            優化前 (142 TOKENS)
-                        </div>
-                        <div class="code-block" style="margin-top: 0;">
-                            <div class="code-content">
-<span style="color: #60A5FA;">{</span>
-  <span style="color: #F97316;">"products"</span><span style="color: #60A5FA;">:</span> <span style="color: #60A5FA;">[</span>
-    <span style="color: #60A5FA;">{</span><span style="color: #F97316;">"id"</span><span style="color: #60A5FA;">:</span> <span style="color: #FFFF00;">101</span><span style="color: #60A5FA;">,</span>
-     <span style="color: #F97316;">"name"</span><span style="color: #60A5FA;">:</span> <span style="color: #00FF00;">"Laptop Pro"</span><span style="color: #60A5FA;">,</span>
-     <span style="color: #F97316;">"price"</span><span style="color: #60A5FA;">:</span> <span style="color: #FFFF00;">1299</span><span style="color: #60A5FA;">},</span>
-    <span style="color: #60A5FA;">{</span><span style="color: #F97316;">"id"</span><span style="color: #60A5FA;">:</span> <span style="color: #FFFF00;">102</span><span style="color: #60A5FA;">,</span>
-     <span style="color: #F97316;">"name"</span><span style="color: #60A5FA;">:</span> <span style="color: #00FF00;">"Magic Mouse"</span><span style="color: #60A5FA;">,</span>
-     <span style="color: #F97316;">"price"</span><span style="color: #60A5FA;">:</span> <span style="color: #FFFF00;">79</span><span style="color: #60A5FA;">}</span>
-  <span style="color: #60A5FA;">]</span>
-<span style="color: #60A5FA;">}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- After -->
-                    <div>
-                        <div style="background: #3B82F6; color: #FFF; padding: 0.5rem; font-family: 'Fira Code', monospace; font-weight: 700; text-align: center; border: 3px solid #000;" data-lang="en">
-                            AFTER (57 TOKENS, -60%)
-                        </div>
-                        <div style="background: #3B82F6; color: #FFF; padding: 0.5rem; font-family: 'Fira Code', monospace; font-weight: 700; text-align: center; border: 3px solid #000;" data-lang="zh-TW">
-                            優化後 (57 TOKENS, -60%)
-                        </div>
-                        <div class="code-block" style="margin-top: 0;">
-                            <div class="code-content">
-<span style="color: #60A5FA;">[</span><span style="color: #F97316;">TOON-JSON</span><span style="color: #60A5FA;">]</span>
-<span style="color: #F97316;">products</span><span style="color: #60A5FA;">[</span><span style="color: #FFFF00;">2</span><span style="color: #60A5FA;">]{</span><span style="color: #F97316;">id</span><span style="color: #60A5FA;">,</span><span style="color: #F97316;">name</span><span style="color: #60A5FA;">,</span><span style="color: #F97316;">price</span><span style="color: #60A5FA;">}:</span>
-  <span style="color: #FFFF00;">101</span><span style="color: #60A5FA;">,</span>Laptop Pro<span style="color: #60A5FA;">,</span><span style="color: #FFFF00;">1299</span>
-  <span style="color: #FFFF00;">102</span><span style="color: #60A5FA;">,</span>Magic Mouse<span style="color: #60A5FA;">,</span><span style="color: #FFFF00;">79</span>
-                            </div>
-                        </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="feature-card p-6">
+                    <h3 class="text-xl font-bold heading-mono mb-4" style="color: var(--text-primary);">Before Optimization (142 tokens)</h3>
+                    <div class="code-block">
+                        <code><span class="punctuation">{</span>
+  <span class="property">"products"</span><span class="punctuation">:</span> <span class="punctuation">[</span>
+    <span class="punctuation">{</span><span class="property">"id"</span><span class="punctuation">:</span> <span class="number">101</span><span class="punctuation">,</span> <span class="property">"name"</span><span class="punctuation">:</span> <span class="string">"Laptop Pro"</span><span class="punctuation">,</span> <span class="property">"price"</span><span class="punctuation">:</span> <span class="number">1299</span><span class="punctuation">},</span>
+    <span class="punctuation">{</span><span class="property">"id"</span><span class="punctuation">:</span> <span class="number">102</span><span class="punctuation">,</span> <span class="property">"name"</span><span class="punctuation">:</span> <span class="string">"Magic Mouse"</span><span class="punctuation">,</span> <span class="property">"price"</span><span class="punctuation">:</span> <span class="number">79</span><span class="punctuation">}</span>
+  <span class="punctuation">]</span>
+<span class="punctuation">}</span></code>
                     </div>
                 </div>
+
+                <div class="feature-card p-6">
+                    <h3 class="text-xl font-bold heading-mono mb-4" style="color: var(--text-primary);">After Optimization (57 tokens, <span class="gradient-text">-60%</span>)</h3>
+                    <div class="code-block">
+                        <code><span class="punctuation">[</span><span class="keyword">TOON-JSON</span><span class="punctuation">]</span>
+<span class="property">products</span><span class="punctuation">[</span><span class="number">2</span><span class="punctuation">]{</span><span class="property">id</span><span class="punctuation">,</span><span class="property">name</span><span class="punctuation">,</span><span class="property">price</span><span class="punctuation">}:</span>
+  <span class="number">101</span><span class="punctuation">,</span>Laptop Pro<span class="punctuation">,</span><span class="number">1299</span>
+  <span class="number">102</span><span class="punctuation">,</span>Magic Mouse<span class="punctuation">,</span><span class="number">79</span></code>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 text-center" style="color: var(--text-secondary);">
+                <strong style="color: var(--text-primary);">Automatically applied in Plugin mode</strong> - no manual calls needed!
             </div>
         </div>
     </section>
 
     <!-- CTA Section -->
-    <section class="cta-section" style="text-align: center;">
-        <div class="brutalist-container" style="position: relative; z-index: 1;">
-            <h2 style="font-family: 'Fira Code', monospace; font-weight: 700; font-size: clamp(2rem, 5vw, 3rem); color: #FFFFFF; margin-bottom: 1rem;" data-lang="en">
-                READY TO OPTIMIZE?
+    <section class="py-20" style="background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-4xl md:text-5xl font-bold heading-mono text-white mb-6">
+                Ready to Optimize Your Token Usage?
             </h2>
-            <h2 style="font-family: 'Fira Code', monospace; font-weight: 700; font-size: clamp(2rem, 5vw, 3rem); color: #FFFFFF; margin-bottom: 1rem;" data-lang="zh-TW">
-                準備好優化了嗎？
-            </h2>
-
-            <p style="color: rgba(255,255,255,0.9); font-size: 1.25rem; margin-bottom: 2rem;" data-lang="en">
-                Join developers saving 40-60% on Claude API token costs
+            <p class="text-xl text-blue-100 mb-8">
+                Join developers who are saving 30-65% on Claude API token costs
             </p>
-            <p style="color: rgba(255,255,255,0.9); font-size: 1.25rem; margin-bottom: 2rem;" data-lang="zh-TW">
-                加入節省 40-60% Claude API token 成本的開發者行列
-            </p>
-
-            <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-                <a href="https://github.com/PCIRCLE-AI/toonify-mcp" class="btn-brutalist" style="background: #000; border-color: #000;" data-lang="en">
-                    ★ STAR ON GITHUB
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="https://github.com/PCIRCLE-AI/toonify-mcp" class="btn-primary" style="background: white; color: #2563EB;">
+                    ⭐ Star on GitHub
                 </a>
-                <a href="https://github.com/PCIRCLE-AI/toonify-mcp" class="btn-brutalist" style="background: #000; border-color: #000;" data-lang="zh-TW">
-                    ★ GITHUB 點星星
-                </a>
-
-                <a href="https://www.npmjs.com/package/toonify-mcp" class="btn-brutalist-secondary" style="background: transparent; color: #FFF; border-color: #FFF;" data-lang="en">
-                    INSTALL FROM NPM →
-                </a>
-                <a href="https://www.npmjs.com/package/toonify-mcp" class="btn-brutalist-secondary" style="background: transparent; color: #FFF; border-color: #FFF;" data-lang="zh-TW">
-                    從 NPM 安裝 →
+                <a href="https://www.npmjs.com/package/toonify-mcp" class="btn-secondary" style="border-color: white; color: white;">
+                    Install from npm →
                 </a>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer style="padding: 3rem 0;">
-        <div class="brutalist-container">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+    <footer style="background: var(--bg-secondary); border-top: 1px solid var(--border-color);" class="py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
                 <div>
-                    <h3 style="font-family: 'Fira Code', monospace; font-weight: 700; color: #60A5FA; margin-bottom: 1rem;">TOONIFY_MCP</h3>
-                    <p style="color: #94A3B8; line-height: 1.6;" data-lang="en">
+                    <h3 class="text-xl font-bold heading-mono mb-4 gradient-text">Toonify MCP</h3>
+                    <p style="color: var(--text-secondary);">
                         Free & open-source token optimization plugin for Claude Code. MIT Licensed.
-                    </p>
-                    <p style="color: #94A3B8; line-height: 1.6;" data-lang="zh-TW">
-                        Claude Code 免費開源 token 優化插件。MIT 授權。
                     </p>
                 </div>
                 <div>
-                    <h4 style="font-family: 'Fira Code', monospace; font-weight: 700; color: #FFFFFF; margin-bottom: 1rem;" data-lang="en">RESOURCES</h4>
-                    <h4 style="font-family: 'Fira Code', monospace; font-weight: 700; color: #FFFFFF; margin-bottom: 1rem;" data-lang="zh-TW">資源</h4>
-                    <ul style="list-style: none; color: #94A3B8; line-height: 2;">
-                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp#readme" data-lang="en">Documentation</a></li>
-                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp#readme" data-lang="zh-TW">文檔</a></li>
-
-                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/blob/main/CONTRIBUTING.md" data-lang="en">Contributing</a></li>
-                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/blob/main/CONTRIBUTING.md" data-lang="zh-TW">貢獻指南</a></li>
-
-                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/blob/main/CHANGELOG.md">Changelog</a></li>
-                        <li><a href="https://www.npmjs.com/package/toonify-mcp">npm Package</a></li>
+                    <h4 class="font-bold mb-4" style="color: var(--text-primary);">Resources</h4>
+                    <ul class="space-y-2" style="color: var(--text-secondary);">
+                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp#readme" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Documentation</a></li>
+                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/blob/main/CONTRIBUTING.md" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Contributing Guide</a></li>
+                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/blob/main/CHANGELOG.md" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Changelog</a></li>
+                        <li><a href="https://www.npmjs.com/package/toonify-mcp" class="hover:text-blue-600 dark:hover:text-blue-400 transition">npm Package</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 style="font-family: 'Fira Code', monospace; font-weight: 700; color: #FFFFFF; margin-bottom: 1rem;" data-lang="en">COMMUNITY</h4>
-                    <h4 style="font-family: 'Fira Code', monospace; font-weight: 700; color: #FFFFFF; margin-bottom: 1rem;" data-lang="zh-TW">社群</h4>
-                    <ul style="list-style: none; color: #94A3B8; line-height: 2;">
-                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp">GitHub</a></li>
-                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/issues">Issues</a></li>
-                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/discussions" data-lang="en">Discussions</a></li>
-                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/discussions" data-lang="zh-TW">討論區</a></li>
-
-                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/pulls">Pull Requests</a></li>
+                    <h4 class="font-bold mb-4" style="color: var(--text-primary);">Community</h4>
+                    <ul class="space-y-2" style="color: var(--text-secondary);">
+                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp" class="hover:text-blue-600 dark:hover:text-blue-400 transition">GitHub</a></li>
+                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/issues" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Issues</a></li>
+                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/discussions" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Discussions</a></li>
+                        <li><a href="https://github.com/PCIRCLE-AI/toonify-mcp/pulls" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Pull Requests</a></li>
                     </ul>
                 </div>
             </div>
-            <div style="border-top: 2px solid #334155; padding-top: 2rem; text-align: center; color: #64748B;">
-                <p style="margin-bottom: 0.5rem;" data-lang="en">
-                    <strong style="color: #FFFFFF;">MIT License</strong> - Free to use, modify, and distribute
+            <div class="pt-8 text-center" style="border-top: 1px solid var(--border-color); color: var(--text-tertiary);">
+                <p class="mb-2">
+                    <strong style="color: var(--text-primary);">MIT License</strong> - Free to use, modify, and distribute
                 </p>
-                <p style="margin-bottom: 0.5rem;" data-lang="zh-TW">
-                    <strong style="color: #FFFFFF;">MIT 授權</strong> - 自由使用、修改與散布
-                </p>
-
-                <p data-lang="en">
-                    Copyright © 2024-2025 PCIRCLE AI. Built with data-driven precision.
-                </p>
-                <p data-lang="zh-TW">
-                    版權所有 © 2024-2025 PCIRCLE AI. 以數據驅動的精準度打造。
+                <p>
+                    Copyright © 2024-2025 PCIRCLE AI. Built with ❤️ by developers, for developers.
                 </p>
             </div>
         </div>
     </footer>
 
     <script>
-        // Language Switcher
-        const langSwitch = document.getElementById('langSwitch');
+        // Dark Mode Toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
         const html = document.documentElement;
+        const sunIcon = darkModeToggle.querySelector('.sun-icon');
+        const moonIcon = darkModeToggle.querySelector('.moon-icon');
 
-        // Check for saved language preference or default to English
-        const currentLang = localStorage.getItem('lang') || 'en';
-        if (currentLang === 'zh-TW') {
-            html.setAttribute('lang', 'zh-TW');
+        // Check for saved theme preference or default to light mode
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        if (currentTheme === 'dark') {
+            html.classList.add('dark');
+            sunIcon.classList.add('hidden');
+            moonIcon.classList.remove('hidden');
         }
 
-        langSwitch.addEventListener('click', () => {
-            if (html.getAttribute('lang') === 'zh-TW') {
-                html.setAttribute('lang', 'en');
-                localStorage.setItem('lang', 'en');
+        darkModeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+
+            if (html.classList.contains('dark')) {
+                localStorage.setItem('theme', 'dark');
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
             } else {
-                html.setAttribute('lang', 'zh-TW');
-                localStorage.setItem('lang', 'zh-TW');
+                localStorage.setItem('theme', 'light');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
             }
+        });
+
+        // Navigation Shadow on Scroll
+        const nav = document.getElementById('mainNav');
+        let lastScroll = 0;
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+
+            if (currentScroll > 10) {
+                nav.classList.add('nav-scrolled');
+            } else {
+                nav.classList.remove('nav-scrolled');
+            }
+
+            lastScroll = currentScroll;
         });
 
         // Smooth scroll for anchor links
